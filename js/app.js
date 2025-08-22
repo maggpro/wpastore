@@ -1,0 +1,389 @@
+// Главное приложение WPA каталога
+class WPACatalogApp {
+    constructor() {
+        this.currentPage = 'home';
+        this.searchQuery = '';
+        this.init();
+    }
+
+    init() {
+        // Инициализация компонентов
+        Components.init();
+        
+        // Инициализация страниц
+        this.initPages();
+        
+        // Инициализация навигации
+        this.initNavigation();
+        
+        // Инициализация поиска
+        this.initSearch();
+        
+        // Инициализация форм
+        this.initForms();
+        
+        // Инициализация админ панели
+        this.initAdminPanel();
+        
+        // Загрузка начальной страницы
+        this.loadPage('home');
+    }
+
+    // Инициализация страниц
+    initPages() {
+        // Заполняем категории в форме добавления приложения
+        const categorySelect = document.getElementById('appCategory');
+        if (categorySelect) {
+            WPA_DATA.categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.name;
+                categorySelect.appendChild(option);
+            });
+        }
+    }
+
+    // Инициализация навигации
+    initNavigation() {
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = link.dataset.page;
+                this.navigateToPage(page);
+            });
+        });
+
+        // Обработка хэша в URL
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.slice(1) || 'home';
+            this.navigateToPage(hash);
+        });
+
+        // Обработка начального хэша
+        const initialHash = window.location.hash.slice(1) || 'home';
+        this.navigateToPage(initialHash);
+    }
+
+    // Навигация по страницам
+    navigateToPage(pageName) {
+        // Скрываем все страницы
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
+        });
+
+        // Убираем активный класс со всех ссылок
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
+
+        // Показываем нужную страницу
+        const targetPage = document.getElementById(pageName);
+        if (targetPage) {
+            targetPage.classList.add('active');
+            this.currentPage = pageName;
+            
+            // Обновляем URL
+            window.location.hash = pageName;
+            
+            // Активируем соответствующую ссылку
+            const activeLink = document.querySelector(`[data-page="${pageName}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+
+            // Загружаем контент страницы
+            this.loadPage(pageName);
+        }
+    }
+
+    // Загрузка контента страницы
+    loadPage(pageName) {
+        switch (pageName) {
+            case 'home':
+                this.loadHomePage();
+                break;
+            case 'categories':
+                this.loadCategoriesPage();
+                break;
+            case 'submit':
+                this.loadSubmitPage();
+                break;
+            case 'admin':
+                this.loadAdminPage();
+                break;
+        }
+    }
+
+    // Загрузка главной страницы
+    loadHomePage() {
+        // Загружаем рекомендуемые приложения
+        const featuredApps = DataManager.getFeaturedApps();
+        const featuredContainer = document.getElementById('featuredApps');
+        if (featuredContainer) {
+            featuredContainer.innerHTML = '';
+            featuredApps.forEach(app => {
+                featuredContainer.appendChild(Components.createAppCard(app));
+            });
+        }
+
+        // Загружаем недавно добавленные приложения
+        const recentApps = DataManager.getRecentApps();
+        const recentContainer = document.getElementById('recentApps');
+        if (recentContainer) {
+            recentContainer.innerHTML = '';
+            recentApps.forEach(app => {
+                recentContainer.appendChild(Components.createAppCard(app));
+            });
+        }
+    }
+
+    // Загрузка страницы категорий
+    loadCategoriesPage() {
+        const categoriesContainer = document.getElementById('categoriesGrid');
+        if (categoriesContainer) {
+            categoriesContainer.innerHTML = '';
+            WPA_DATA.categories.forEach(category => {
+                categoriesContainer.appendChild(Components.createCategoryCard(category));
+            });
+        }
+    }
+
+    // Загрузка страницы добавления приложения
+    loadSubmitPage() {
+        // Форма уже инициализирована в initPages()
+        // Здесь можно добавить дополнительную логику
+    }
+
+    // Загрузка админ страницы
+    loadAdminPage() {
+        Components.refreshAdminPanel();
+    }
+
+    // Инициализация поиска
+    initSearch() {
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+
+        if (searchInput && searchBtn) {
+            // Поиск по кнопке
+            searchBtn.addEventListener('click', () => {
+                this.performSearch(searchInput.value);
+            });
+
+            // Поиск по Enter
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.performSearch(searchInput.value);
+                }
+            });
+
+            // Поиск в реальном времени с дебаунсом
+            const debouncedSearch = Utils.debounce((query) => {
+                this.performSearch(query);
+            }, 300);
+
+            searchInput.addEventListener('input', (e) => {
+                debouncedSearch(e.target.value);
+            });
+        }
+    }
+
+    // Выполнение поиска
+    performSearch(query) {
+        this.searchQuery = query.trim();
+        
+        if (!this.searchQuery) {
+            // Если поиск пустой, возвращаемся на главную
+            this.navigateToPage('home');
+            return;
+        }
+
+        // Создаем временную страницу результатов поиска
+        const searchResults = DataManager.searchApps(this.searchQuery);
+        
+        // Удаляем существующую страницу поиска
+        const existingSearchPage = document.querySelector('.search-results-page');
+        if (existingSearchPage) {
+            existingSearchPage.remove();
+        }
+
+        const searchPage = document.createElement('section');
+        searchPage.className = 'page search-results-page';
+        searchPage.innerHTML = `
+            <div class="container">
+                <div class="search-header">
+                    <button class="btn btn-secondary back-btn">
+                        <i class="fas fa-arrow-left"></i> Назад
+                    </button>
+                    <h2>Результаты поиска</h2>
+                    <p>Найдено ${searchResults.length} приложений по запросу "${this.searchQuery}"</p>
+                </div>
+                <div class="apps-grid" id="searchResultsGrid"></div>
+            </div>
+        `;
+
+        // Показываем страницу результатов
+        document.querySelector('.main-content').appendChild(searchPage);
+        
+        // Скрываем все остальные страницы
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        searchPage.classList.add('active');
+
+        // Заполняем результаты
+        const resultsGrid = searchPage.querySelector('#searchResultsGrid');
+        if (searchResults.length > 0) {
+            searchResults.forEach(app => {
+                resultsGrid.appendChild(Components.createAppCard(app));
+            });
+        } else {
+            resultsGrid.innerHTML = `
+                <div class="no-results">
+                    <i class="fas fa-search" style="font-size: 4rem; color: #ccc; margin-bottom: 1rem;"></i>
+                    <h3>Ничего не найдено</h3>
+                    <p>Попробуйте изменить поисковый запрос</p>
+                </div>
+            `;
+        }
+
+        // Обработчик кнопки "Назад"
+        const backBtn = searchPage.querySelector('.back-btn');
+        backBtn.addEventListener('click', () => {
+            searchPage.remove();
+            this.navigateToPage('home');
+        });
+    }
+
+    // Инициализация форм
+    initForms() {
+        const submitForm = document.getElementById('submitAppForm');
+        if (submitForm) {
+            submitForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleAppSubmission();
+            });
+        }
+    }
+
+    // Обработка отправки приложения
+    handleAppSubmission() {
+        const formData = {
+            name: document.getElementById('appName').value.trim(),
+            description: document.getElementById('appDescription').value.trim(),
+            category: document.getElementById('appCategory').value,
+            developer: document.getElementById('appDeveloper').value.trim(),
+            version: document.getElementById('appVersion').value.trim() || '1.0.0',
+            website: document.getElementById('appWebsite').value.trim(),
+            icon: document.getElementById('appIcon').value.trim(),
+            screenshots: document.getElementById('appScreenshots').value.trim()
+                .split(',')
+                .map(url => url.trim())
+                .filter(url => url && Utils.isValidUrl(url)),
+            features: []
+        };
+
+        // Валидация
+        if (!formData.name || !formData.description || !formData.category || !formData.developer) {
+            Utils.showNotification('Пожалуйста, заполните все обязательные поля', 'error');
+            return;
+        }
+
+        if (formData.website && !Utils.isValidUrl(formData.website)) {
+            Utils.showNotification('Пожалуйста, введите корректный URL веб-сайта', 'error');
+            return;
+        }
+
+        if (formData.icon && !Utils.isValidUrl(formData.icon)) {
+            Utils.showNotification('Пожалуйста, введите корректный URL иконки', 'error');
+            return;
+        }
+
+        // Добавляем приложение
+        try {
+            DataManager.addApp(formData);
+            Utils.showNotification('Приложение успешно отправлено на рассмотрение!', 'success');
+            
+            // Очищаем форму
+            document.getElementById('submitAppForm').reset();
+            
+            // Переходим на главную страницу
+            this.navigateToPage('home');
+        } catch (error) {
+            Utils.showNotification('Ошибка при отправке приложения', 'error');
+            console.error('Ошибка отправки:', error);
+        }
+    }
+
+    // Инициализация админ панели
+    initAdminPanel() {
+        const approveAllBtn = document.getElementById('approveAllBtn');
+        const rejectAllBtn = document.getElementById('rejectAllBtn');
+
+        if (approveAllBtn) {
+            approveAllBtn.addEventListener('click', () => {
+                this.handleBulkAction('approve');
+            });
+        }
+
+        if (rejectAllBtn) {
+            rejectAllBtn.addEventListener('click', () => {
+                this.handleBulkAction('reject');
+            });
+        }
+    }
+
+    // Обработка массовых действий
+    handleBulkAction(action) {
+        const pendingApps = DataManager.getPendingApps();
+        
+        if (pendingApps.length === 0) {
+            Utils.showNotification('Нет приложений для обработки', 'info');
+            return;
+        }
+
+        const actionText = action === 'approve' ? 'одобрить' : 'отклонить';
+        const actionTextPast = action === 'approve' ? 'одобрены' : 'отклонены';
+
+        Utils.showConfirmDialog(
+            `Вы уверены, что хотите ${actionText} все ${pendingApps.length} приложений?`,
+            () => {
+                let successCount = 0;
+                
+                pendingApps.forEach(app => {
+                    if (action === 'approve') {
+                        if (DataManager.approveApp(app.id)) {
+                            successCount++;
+                        }
+                    } else {
+                        if (DataManager.rejectApp(app.id)) {
+                            successCount++;
+                        }
+                    }
+                });
+
+                Utils.showNotification(
+                    `${successCount} приложений ${actionTextPast}`, 
+                    action === 'approve' ? 'success' : 'info'
+                );
+
+                // Обновляем админ панель
+                Components.refreshAdminPanel();
+            }
+        );
+    }
+}
+
+// Инициализация приложения после загрузки DOM
+document.addEventListener('DOMContentLoaded', () => {
+    window.wpaCatalogApp = new WPACatalogApp();
+});
+
+// Глобальные функции для использования в HTML
+window.showAppModal = (appId) => {
+    Components.showAppModal(appId);
+};
+
+window.copyToClipboard = (text) => {
+    Utils.copyToClipboard(text);
+};

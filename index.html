@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WPA.STORE - Магазин приложений</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-store"></i>
+                    <h1>WPA.STORE</h1>
+                </div>
+                <nav class="nav">
+                    <ul class="nav-list">
+                        <li><a href="#home" class="nav-link active" data-page="home">Главная</a></li>
+                        <li><a href="#categories" class="nav-link" data-page="categories">Категории</a></li>
+                        <li><a href="#submit" class="nav-link" data-page="submit">Добавить приложение</a></li>
+                        <li><a href="#admin" class="nav-link admin-link" data-page="admin">Админка</a></li>
+                        <li><a href="settings.html" class="nav-link"><i class="fas fa-cog"></i></a></li>
+                    </ul>
+                </nav>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Поиск приложений...">
+                    <button id="searchBtn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Page -->
+        <section id="home" class="page active">
+            <div class="container">
+                <div class="hero-section">
+                    <h2>Добро пожаловать в WPA.STORE</h2>
+                    <p>Ваш надежный магазин прогрессивных веб-приложений</p>
+                </div>
+                
+                <div class="featured-section">
+                    <h3>Рекомендуемые приложения</h3>
+                    <div id="featuredApps" class="apps-grid"></div>
+                </div>
+                
+                <div class="recent-section">
+                    <h3>Недавно добавленные</h3>
+                    <div id="recentApps" class="apps-grid"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories Page -->
+        <section id="categories" class="page">
+            <div class="container">
+                <h2>Категории приложений</h2>
+                <div id="categoriesGrid" class="categories-grid"></div>
+            </div>
+        </section>
+
+        <!-- Submit App Page -->
+        <section id="submit" class="page">
+            <div class="container">
+                <h2>Добавить новое приложение</h2>
+                <form id="submitAppForm" class="submit-form">
+                    <div class="form-group">
+                        <label for="appName">Название приложения *</label>
+                        <input type="text" id="appName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="appDescription">Описание *</label>
+                        <textarea id="appDescription" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="appCategory">Категория *</label>
+                        <select id="appCategory" required></select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="appDeveloper">Разработчик *</label>
+                        <input type="text" id="appDeveloper" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="appVersion">Версия</label>
+                        <input type="text" id="appVersion" placeholder="1.0.0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="appWebsite">Веб-сайт</label>
+                        <input type="url" id="appWebsite" placeholder="https://example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="appIcon">URL иконки</label>
+                        <input type="url" id="appIcon" placeholder="https://example.com/icon.png">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="appScreenshots">URL скриншотов (через запятую)</label>
+                        <input type="text" id="appScreenshots" placeholder="https://example.com/screen1.png, https://example.com/screen2.png">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Отправить на рассмотрение</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Admin Page -->
+        <section id="admin" class="page">
+            <div class="container">
+                <h2>Админ панель</h2>
+                <div class="admin-controls">
+                    <button id="approveAllBtn" class="btn btn-success">Одобрить все</button>
+                    <button id="rejectAllBtn" class="btn btn-danger">Отклонить все</button>
+                </div>
+                <div id="pendingApps" class="pending-apps"></div>
+            </div>
+        </section>
+
+        <!-- App Details Modal -->
+        <div id="appModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="appModalContent"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 WPA.STORE. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/github-db.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
