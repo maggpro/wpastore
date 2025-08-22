@@ -109,6 +109,15 @@ body {
     padding: 2rem 0;
 }
 
+/* Page Content Display */
+.page-content {
+    display: none;
+}
+
+.page-content.active {
+    display: block;
+}
+
 .page {
     display: none;
 }

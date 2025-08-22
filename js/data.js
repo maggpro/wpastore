@@ -102,6 +102,25 @@ const WPA_DATA = {
         },
         {
             id: 3,
+            name: 'Calm - Дыхательные упражнения',
+            description: 'Приложение для медитации и дыхательных упражнений. Помогает снизить стресс, улучшить сон и общее самочувствие с помощью различных техник дыхания.',
+            category: 'health',
+            developer: 'MaggPro',
+            version: '1.0.0',
+            rating: 4.9,
+            downloads: 1250,
+            website: 'https://maggpro.github.io/calm/',
+            icon: 'https://via.placeholder.com/80/fa709a/ffffff?text=🫁',
+            screenshots: [
+                'https://via.placeholder.com/400x300/fa709a/ffffff?text=Calm+App',
+                'https://via.placeholder.com/400x300/fa709a/ffffff?text=Breathing+Mode'
+            ],
+            features: ['Техника 4-7-8', 'Box Breathing', 'Когерентное дыхание', 'Журнал стресса', 'Настройки вибрации', 'Голосовые подсказки'],
+            status: 'approved',
+            dateAdded: '2024-01-20'
+        },
+        {
+            id: 4,
             name: 'WPA Fitness Tracker',
             description: 'Отслеживайте свои тренировки, питание и прогресс в достижении фитнес-целей.',
             category: 'health',
@@ -248,6 +267,7 @@ const DataManager = {
         };
         WPA_DATA.pendingApps.push(newApp);
         this.saveToLocalStorage();
+        console.log('Добавлено новое приложение:', newApp);
         return newApp;
     },
 
@@ -259,6 +279,7 @@ const DataManager = {
             app.status = 'approved';
             WPA_DATA.apps.push(app);
             this.saveToLocalStorage();
+            console.log('Приложение одобрено:', app);
             return true;
         }
         return false;
@@ -268,8 +289,9 @@ const DataManager = {
     rejectApp(appId) {
         const pendingIndex = WPA_DATA.pendingApps.findIndex(app => app.id === appId);
         if (pendingIndex !== -1) {
-            WPA_DATA.pendingApps.splice(pendingIndex, 1);
+            const app = WPA_DATA.pendingApps.splice(pendingIndex, 1)[0];
             this.saveToLocalStorage();
+            console.log('Приложение отклонено:', app);
             return true;
         }
         return false;
@@ -279,6 +301,7 @@ const DataManager = {
     saveToLocalStorage() {
         try {
             localStorage.setItem('wpa_catalog_data', JSON.stringify(WPA_DATA));
+            console.log('Данные сохранены в LocalStorage');
         } catch (error) {
             console.error('Ошибка сохранения в LocalStorage:', error);
         }
@@ -291,6 +314,7 @@ const DataManager = {
             if (saved) {
                 const parsed = JSON.parse(saved);
                 Object.assign(WPA_DATA, parsed);
+                console.log('Данные загружены из LocalStorage');
             }
         } catch (error) {
             console.error('Ошибка загрузки из LocalStorage:', error);
@@ -304,10 +328,12 @@ const DataManager = {
         if (!localStorage.getItem('wpa_catalog_data')) {
             this.saveToLocalStorage();
         }
+        console.log('DataManager инициализирован');
     }
 };
 
 // Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
     DataManager.init();
+    console.log('WPA_DATA загружен:', WPA_DATA);
 });

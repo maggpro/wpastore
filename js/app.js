@@ -30,6 +30,13 @@ class WPACatalogApp {
         
         // Загрузка начальной страницы
         this.loadPage('home');
+        
+        // Показываем главную страницу по умолчанию
+        const homePage = document.getElementById('homePage');
+        if (homePage) {
+            homePage.style.display = 'block';
+            homePage.classList.add('active');
+        }
     }
 
     // Инициализация страниц
@@ -37,6 +44,9 @@ class WPACatalogApp {
         // Заполняем категории в форме добавления приложения
         const categorySelect = document.getElementById('appCategory');
         if (categorySelect) {
+            // Очищаем существующие опции
+            categorySelect.innerHTML = '<option value="">Выберите категорию</option>';
+            
             WPA_DATA.categories.forEach(category => {
                 const option = document.createElement('option');
                 option.value = category.id;
@@ -71,9 +81,12 @@ class WPACatalogApp {
 
     // Навигация по страницам
     navigateToPage(pageName) {
+        console.log('Переход на страницу:', pageName);
+        
         // Скрываем все страницы
-        document.querySelectorAll('.page').forEach(page => {
+        document.querySelectorAll('.page-content').forEach(page => {
             page.classList.remove('active');
+            page.style.display = 'none';
         });
 
         // Убираем активный класс со всех ссылок
@@ -82,22 +95,27 @@ class WPACatalogApp {
         });
 
         // Показываем нужную страницу
-        const targetPage = document.getElementById(pageName);
+        const targetPage = document.getElementById(pageName + 'Page');
         if (targetPage) {
             targetPage.classList.add('active');
+            targetPage.style.display = 'block';
             this.currentPage = pageName;
-            
-            // Обновляем URL
-            window.location.hash = pageName;
-            
-            // Активируем соответствующую ссылку
-            const activeLink = document.querySelector(`[data-page="${pageName}"]`);
-            if (activeLink) {
-                activeLink.classList.add('active');
-            }
+            console.log('Страница показана:', targetPage.id);
+        } else {
+            console.error('Страница не найдена:', pageName + 'Page');
+        }
+        
+        // Обновляем URL
+        window.location.hash = pageName;
+        
+        // Активируем соответствующую ссылку
+        const activeLink = document.querySelector(`[data-page="${pageName}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
 
-            // Загружаем контент страницы
-            this.loadPage(pageName);
+        // Загружаем контент страницы
+        this.loadPage(pageName);
         }
     }
 
@@ -144,6 +162,8 @@ class WPACatalogApp {
                 const featuredApps = DataManager.getFeaturedApps();
                 const recentApps = DataManager.getRecentApps();
                 
+                console.log('Загружено приложений:', { featured: featuredApps.length, recent: recentApps.length });
+                
                 this.renderApps(featuredApps, 'featuredApps');
                 this.renderApps(recentApps, 'recentApps');
             }
@@ -165,11 +185,18 @@ class WPACatalogApp {
             container.innerHTML = '';
             if (apps.length > 0) {
                 apps.forEach(app => {
-                    container.appendChild(Components.createAppCard(app));
+                    const card = Components.createAppCard(app);
+                    if (card) {
+                        container.appendChild(card);
+                    }
                 });
+                console.log(`Рендерено ${apps.length} приложений в ${containerId}`);
             } else {
                 container.innerHTML = '<p class="no-apps">Приложений пока нет</p>';
+                console.log(`Контейнер ${containerId} пуст`);
             }
+        } else {
+            console.error(`Контейнер ${containerId} не найден`);
         }
     }
 
@@ -179,26 +206,58 @@ class WPACatalogApp {
         if (categoriesContainer) {
             categoriesContainer.innerHTML = '';
             WPA_DATA.categories.forEach(category => {
-                categoriesContainer.appendChild(Components.createCategoryCard(category));
+                const card = Components.createCategoryCard(category);
+                if (card) {
+                    categoriesContainer.appendChild(card);
+                }
             });
+            console.log('Загружено категорий:', WPA_DATA.categories.length);
         }
+    }
+    
+    // Загрузка категорий (для совместимости)
+    loadCategories() {
+        this.loadCategoriesPage();
     }
 
     // Загрузка страницы добавления приложения
     loadSubmitPage() {
         // Форма уже инициализирована в initPages()
         // Здесь можно добавить дополнительную логику
+        console.log('Страница добавления приложения загружена');
     }
 
     // Загрузка админ страницы
     loadAdminPage() {
-        Components.refreshAdminPanel();
+        this.loadPendingApps();
+    }
+    
+    // Загрузка ожидающих приложений
+    loadPendingApps() {
+        const pendingContainer = document.getElementById('pendingApps');
+        if (pendingContainer) {
+            pendingContainer.innerHTML = '';
+            const pendingApps = DataManager.getPendingApps();
+            
+            console.log('Загружено ожидающих приложений:', pendingApps.length);
+            
+            if (pendingApps.length > 0) {
+                pendingApps.forEach(app => {
+                    const card = Components.createPendingAppCard(app);
+                    if (card) {
+                        pendingContainer.appendChild(card);
+                    }
+                });
+            } else {
+                pendingContainer.innerHTML = '<p class="no-apps">Нет приложений на рассмотрении</p>';
+            }
+        }
     }
 
     // Инициализация поиска
     initSearch() {
         const searchInput = document.getElementById('searchInput');
-        const searchBtn = document.getElementById('searchBtn');
+        const searchBtn = document.querySelector('.search-button');
 
         if (searchInput && searchBtn) {
             // Поиск по кнопке
@@ -236,6 +295,7 @@ class WPACatalogApp {
 
         // Создаем временную страницу результатов поиска
         const searchResults = DataManager.searchApps(this.searchQuery);
+        console.log('Результаты поиска:', searchResults.length);
         
         // Удаляем существующую страницу поиска
         const existingSearchPage = document.querySelector('.search-results-page');
@@ -243,8 +303,8 @@ class WPACatalogApp {
             existingSearchPage.remove();
         }
 
-        const searchPage = document.createElement('section');
-        searchPage.className = 'page search-results-page';
+        const searchPage = document.createElement('div');
+        searchPage.className = 'page-content search-results-page';
         searchPage.innerHTML = `
             <div class="container">
                 <div class="search-header">
@@ -259,11 +319,15 @@ class WPACatalogApp {
         `;
 
         // Показываем страницу результатов
-        document.querySelector('.main-content').appendChild(searchPage);
+        document.querySelector('.main-content .container').appendChild(searchPage);
         
         // Скрываем все остальные страницы
-        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        document.querySelectorAll('.page-content').forEach(page => {
+            page.classList.remove('active');
+            page.style.display = 'none';
+        });
         searchPage.classList.add('active');
+        searchPage.style.display = 'block';
 
         // Заполняем результаты
         const resultsGrid = searchPage.querySelector('#searchResultsGrid');
@@ -349,8 +413,9 @@ class WPACatalogApp {
                 Utils.showNotification('Приложение успешно отправлено в GitHub!', 'success');
             } else {
                 // Добавляем в локальное хранилище
-                DataManager.addApp(formData);
+                const newApp = DataManager.addApp(formData);
                 Utils.showNotification('Приложение успешно отправлено на рассмотрение!', 'success');
+                console.log('Добавлено новое приложение:', newApp);
             }
             
             // Очищаем форму
@@ -366,20 +431,8 @@ class WPACatalogApp {
 
     // Инициализация админ панели
     initAdminPanel() {
-        const approveAllBtn = document.getElementById('approveAllBtn');
-        const rejectAllBtn = document.getElementById('rejectAllBtn');
-
-        if (approveAllBtn) {
-            approveAllBtn.addEventListener('click', () => {
-                this.handleBulkAction('approve');
-            });
-        }
-
-        if (rejectAllBtn) {
-            rejectAllBtn.addEventListener('click', () => {
-                this.handleBulkAction('reject');
-            });
-        }
+        // Кнопки массовых действий будут добавлены динамически
+        // в функции loadPendingApps
     }
 
     // Инициализация PWA функциональности
@@ -475,8 +528,9 @@ class WPACatalogApp {
                     action === 'approve' ? 'success' : 'info'
                 );
 
-                // Обновляем админ панель
-                Components.refreshAdminPanel();
+                // Обновляем админ панель и главную страницу
+                this.loadPendingApps();
+                this.loadHomePage();
             }
         );
     }
