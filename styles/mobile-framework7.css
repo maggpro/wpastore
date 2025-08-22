@@ -1,0 +1,586 @@
+/* Стили для WPA.STORE с Framework7 */
+
+/* Основные настройки */
+:root {
+    --f7-theme-color: #667eea;
+    --f7-theme-color-rgb: 102, 126, 234;
+    --f7-theme-color-shade: #5a6fd8;
+    --f7-theme-color-tint: #7a8eec;
+}
+
+/* Кастомные стили для приложения */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3rem 1rem 2rem;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.hero-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.hero-icon {
+    font-size: 3rem;
+    color: #ffd700;
+    margin-bottom: 1rem;
+}
+
+.hero-section h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-section p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+/* PWA Install Button */
+.pwa-install-container {
+    margin-top: 2rem;
+}
+
+.pwa-install-btn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    border-radius: 50px;
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    transition: all 0.3s ease;
+}
+
+.pwa-install-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
+.pwa-install-hint {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Search Section */
+.search-section {
+    padding: 1rem;
+    background: white;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.search-container {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.search-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e5e5;
+    border-radius: 25px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--f7-theme-color);
+}
+
+.search-button {
+    background: var(--f7-theme-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-button:hover {
+    background: var(--f7-theme-color-shade);
+    transform: scale(1.05);
+}
+
+/* Content Blocks */
+.content-block {
+    padding: 1.5rem 1rem;
+}
+
+.block-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+/* Apps Grid */
+.apps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.app-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border: 1px solid #e5e5e5;
+}
+
+.app-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-color: var(--f7-theme-color);
+}
+
+.app-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.app-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--f7-theme-color), var(--f7-theme-color-tint));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.app-info h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.app-info p {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.4;
+    margin-bottom: 1rem;
+}
+
+.app-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.app-category {
+    background: rgba(102, 126, 234, 0.1);
+    color: var(--f7-theme-color);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.app-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.app-rating .stars {
+    color: #ffd700;
+}
+
+/* Categories Grid */
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.category-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border: 1px solid #e5e5e5;
+    cursor: pointer;
+}
+
+.category-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-color: var(--f7-theme-color);
+}
+
+.category-icon {
+    font-size: 2.5rem;
+    color: var(--f7-theme-color);
+    margin-bottom: 0.75rem;
+}
+
+.category-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.category-card p {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.category-count {
+    font-size: 0.8rem;
+    color: #888;
+    font-weight: 500;
+}
+
+/* Page Headers */
+.page-header {
+    background: white;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.page-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+/* Forms */
+.submit-form {
+    padding: 1rem;
+}
+
+.submit-form .list {
+    margin-bottom: 2rem;
+}
+
+.submit-form .item-content {
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.submit-form .item-title {
+    font-weight: 600;
+    color: #333;
+}
+
+.submit-form .item-input-wrap input,
+.submit-form .item-input-wrap select,
+.submit-form .item-input-wrap textarea {
+    font-size: 16px;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    padding: 0.75rem;
+    transition: border-color 0.3s ease;
+}
+
+.submit-form .item-input-wrap input:focus,
+.submit-form .item-input-wrap select:focus,
+.submit-form .item-input-wrap textarea:focus {
+    outline: none;
+    border-color: var(--f7-theme-color);
+}
+
+/* Pending Apps */
+.pending-apps {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.pending-app {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 1px solid #e5e5e5;
+}
+
+.pending-app-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.pending-app-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #ffc107, #ff9800);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+}
+
+.pending-app-info h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.pending-app-info p {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.pending-app-meta {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 1rem;
+}
+
+.pending-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.pending-actions .button {
+    flex: 1;
+    padding: 0.5rem;
+    font-size: 0.85rem;
+}
+
+/* Bottom Tabbar */
+.toolbar-bottom {
+    background: white;
+    border-top: 1px solid #e5e5e5;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+.tabbar {
+    height: 70px;
+}
+
+.tabbar .toolbar-inner {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.tab-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #888;
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 8px;
+    min-height: 50px;
+    width: 100%;
+}
+
+.tab-link i {
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.tab-link span {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.tab-link-active {
+    color: var(--f7-theme-color);
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.tab-link:hover {
+    color: var(--f7-theme-color);
+    background: rgba(102, 126, 234, 0.05);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-section p {
+        font-size: 1rem;
+    }
+    
+    .apps-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .tabbar {
+        height: 65px;
+    }
+    
+    .tab-link span {
+        font-size: 0.7rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .apps-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1.5rem;
+    }
+}
+
+/* Dark Theme Support */
+@media (prefers-color-scheme: dark) {
+    .page-content {
+        background-color: #1a1a1a;
+        color: #ffffff;
+    }
+    
+    .hero-section {
+        background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+    }
+    
+    .app-card,
+    .category-card,
+    .pending-app,
+    .submit-form .item-content {
+        background: #2d2d2d;
+        color: #ffffff;
+        border-color: #444;
+    }
+    
+    .search-section,
+    .page-header {
+        background: #2d2d2d;
+        border-color: #444;
+    }
+    
+    .search-input {
+        background: #3d3d3d;
+        color: #ffffff;
+        border-color: #555;
+    }
+    
+    .toolbar-bottom {
+        background: #2d2d2d;
+        border-color: #444;
+    }
+    
+    .block-title {
+        color: #ffffff;
+    }
+    
+    .app-info h3,
+    .category-card h3,
+    .pending-app-info h3 {
+        color: #ffffff;
+    }
+    
+    .app-info p,
+    .category-card p,
+    .pending-app-info p {
+        color: #ccc;
+    }
+}
+
+/* Loading States */
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: #888;
+}
+
+.loading i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Empty States */
+.no-apps,
+.no-categories {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #888;
+}
+
+.no-apps i,
+.no-categories i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Animations */
+.app-card,
+.category-card,
+.pending-app {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Touch Improvements */
+@media (hover: none) and (pointer: coarse) {
+    .app-card:active,
+    .category-card:active {
+        transform: scale(0.98);
+    }
+    
+    .tab-link:active {
+        background: rgba(102, 126, 234, 0.2);
+    }
+}
