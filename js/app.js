@@ -120,25 +120,56 @@ class WPACatalogApp {
     }
 
     // Загрузка главной страницы
-    loadHomePage() {
-        // Загружаем рекомендуемые приложения
-        const featuredApps = DataManager.getFeaturedApps();
-        const featuredContainer = document.getElementById('featuredApps');
-        if (featuredContainer) {
-            featuredContainer.innerHTML = '';
-            featuredApps.forEach(app => {
-                featuredContainer.appendChild(Components.createAppCard(app));
-            });
+    async loadHomePage() {
+        try {
+            // Проверяем, настроен ли GitHub
+            const useGitHub = ConfigManager.get('github.useIssuesAsDB', false);
+            
+            if (useGitHub && window.GitHubDB) {
+                // Загружаем из GitHub
+                const githubDB = new GitHubDB({
+                    owner: ConfigManager.get('github.owner'),
+                    repo: ConfigManager.get('github.repo'),
+                    token: ConfigManager.get('github.token')
+                });
+                
+                const allApps = await githubDB.getAllApps();
+                const featuredApps = allApps.filter(app => app.status === 'approved').slice(0, 6);
+                const recentApps = allApps.filter(app => app.status === 'approved').slice(0, 6);
+                
+                this.renderApps(featuredApps, 'featuredApps');
+                this.renderApps(recentApps, 'recentApps');
+            } else {
+                // Загружаем из локального хранилища
+                const featuredApps = DataManager.getFeaturedApps();
+                const recentApps = DataManager.getRecentApps();
+                
+                this.renderApps(featuredApps, 'featuredApps');
+                this.renderApps(recentApps, 'recentApps');
+            }
+        } catch (error) {
+            console.error('Ошибка загрузки приложений:', error);
+            // Fallback на локальные данные
+            const featuredApps = DataManager.getFeaturedApps();
+            const recentApps = DataManager.getRecentApps();
+            
+            this.renderApps(featuredApps, 'featuredApps');
+            this.renderApps(recentApps, 'recentApps');
         }
+    }
 
-        // Загружаем недавно добавленные приложения
-        const recentApps = DataManager.getRecentApps();
-        const recentContainer = document.getElementById('recentApps');
-        if (recentContainer) {
-            recentContainer.innerHTML = '';
-            recentApps.forEach(app => {
-                recentContainer.appendChild(Components.createAppCard(app));
-            });
+    // Рендеринг приложений
+    renderApps(apps, containerId) {
+        const container = document.getElementById(containerId);
+        if (container) {
+            container.innerHTML = '';
+            if (apps.length > 0) {
+                apps.forEach(app => {
+                    container.appendChild(Components.createAppCard(app));
+                });
+            } else {
+                container.innerHTML = '<p class="no-apps">Приложений пока нет</p>';
+            }
         }
     }
 
@@ -270,7 +301,7 @@ class WPACatalogApp {
     }
 
     // Обработка отправки приложения
-    handleAppSubmission() {
+    async handleAppSubmission() {
         const formData = {
             name: document.getElementById('appName').value.trim(),
             description: document.getElementById('appDescription').value.trim(),
@@ -302,10 +333,25 @@ class WPACatalogApp {
             return;
         }
 
-        // Добавляем приложение
         try {
-            DataManager.addApp(formData);
-            Utils.showNotification('Приложение успешно отправлено на рассмотрение!', 'success');
+            // Проверяем, настроен ли GitHub
+            const useGitHub = ConfigManager.get('github.useIssuesAsDB', false);
+            
+            if (useGitHub && window.GitHubDB) {
+                // Добавляем в GitHub Issues
+                const githubDB = new GitHubDB({
+                    owner: ConfigManager.get('github.owner'),
+                    repo: ConfigManager.get('github.repo'),
+                    token: ConfigManager.get('github.token')
+                });
+                
+                await githubDB.addApp(formData);
+                Utils.showNotification('Приложение успешно отправлено в GitHub!', 'success');
+            } else {
+                // Добавляем в локальное хранилище
+                DataManager.addApp(formData);
+                Utils.showNotification('Приложение успешно отправлено на рассмотрение!', 'success');
+            }
             
             // Очищаем форму
             document.getElementById('submitAppForm').reset();
@@ -313,7 +359,7 @@ class WPACatalogApp {
             // Переходим на главную страницу
             this.navigateToPage('home');
         } catch (error) {
-            Utils.showNotification('Ошибка при отправке приложения', 'error');
+            Utils.showNotification('Ошибка при отправке приложения: ' + error.message, 'error');
             console.error('Ошибка отправки:', error);
         }
     }

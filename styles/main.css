@@ -160,6 +160,29 @@ body {
     border-color: #667eea;
 }
 
+/* Улучшения для touch устройств */
+@media (hover: none) and (pointer: coarse) {
+    .app-card:hover {
+        transform: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .app-card:active {
+        transform: scale(0.98);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
+    
+    .category-card:hover {
+        transform: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .category-card:active {
+        transform: scale(0.98);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    }
+}
+
 .app-icon {
     width: 80px;
     height: 80px;
@@ -433,7 +456,7 @@ body {
     margin-top: 3rem;
 }
 
-/* Responsive Design */
+/* Responsive Design - Основные настройки */
 @media (max-width: 768px) {
     .header-content {
         flex-direction: column;
@@ -469,5 +492,40 @@ body {
     
     .pending-apps {
         grid-template-columns: 1fr;
+    }
+}
+
+/* Улучшения для планшетов */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        max-width: 900px;
+        padding: 0 30px;
+    }
+    
+    .apps-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+    }
+}
+
+/* Улучшения для больших экранов */
+@media (min-width: 1025px) {
+    .container {
+        max-width: 1400px;
+    }
+    
+    .apps-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2.5rem;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 2.5rem;
     }
 }

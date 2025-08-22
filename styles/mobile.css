@@ -1,0 +1,403 @@
+/* Мобильные стили для WPA.STORE */
+
+/* Основные мобильные настройки */
+@media (max-width: 768px) {
+    /* Контейнер */
+    .container {
+        padding: 0 15px;
+    }
+    
+    /* Header */
+    .header {
+        padding: 0.5rem 0;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .logo h1 {
+        font-size: 1.5rem;
+    }
+    
+    .logo i {
+        font-size: 1.5rem;
+    }
+    
+    /* Навигация */
+    .nav-list {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+    }
+    
+    .nav-link {
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        background: rgba(255,255,255,0.1);
+        text-align: center;
+        font-size: 0.9rem;
+    }
+    
+    .nav-link.active {
+        background: rgba(255,255,255,0.3);
+    }
+    
+    /* Поиск */
+    .search-container {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    #searchInput {
+        width: 100%;
+        max-width: 300px;
+        font-size: 16px; /* Предотвращает зум на iOS */
+    }
+    
+    /* Hero секция */
+    .hero-section {
+        padding: 2rem 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .hero-section h2 {
+        font-size: 1.8rem;
+        line-height: 1.2;
+    }
+    
+    .hero-section p {
+        font-size: 1rem;
+    }
+    
+    /* PWA Install Button */
+    .pwa-install-container {
+        margin-top: 1.5rem;
+    }
+    
+    .pwa-install-btn {
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+        width: 100%;
+        max-width: 280px;
+    }
+    
+    .pwa-install-hint {
+        font-size: 0.8rem;
+        padding: 0 1rem;
+    }
+    
+    /* Сетки приложений */
+    .apps-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+    
+    .app-card {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+    
+    .app-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .app-info h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .app-info p {
+        font-size: 0.9rem;
+        line-height: 1.4;
+        margin-bottom: 0.75rem;
+    }
+    
+    .app-meta {
+        font-size: 0.8rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+    
+    /* Категории */
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+    
+    .category-card {
+        padding: 1.5rem 1rem;
+    }
+    
+    .category-icon {
+        font-size: 2.5rem;
+    }
+    
+    .category-card h3 {
+        font-size: 1rem;
+    }
+    
+    .category-card p {
+        font-size: 0.85rem;
+    }
+    
+    .category-count {
+        font-size: 0.8rem;
+    }
+    
+    /* Формы */
+    .submit-form {
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 0.75rem;
+        font-size: 16px; /* Предотвращает зум на iOS */
+    }
+    
+    /* Кнопки */
+    .btn {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.9rem;
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .admin-controls {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .admin-controls .btn {
+        max-width: none;
+    }
+    
+    /* Модальные окна */
+    .modal-content {
+        margin: 10% auto;
+        padding: 1.5rem;
+        width: 95%;
+        max-height: 85vh;
+    }
+    
+    .app-modal-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .app-modal-icon {
+        width: 100px;
+        height: 100px;
+        font-size: 2.5rem;
+    }
+    
+    .app-modal-info h2 {
+        font-size: 1.5rem;
+    }
+    
+    .app-modal-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .screenshots-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .screenshots-grid img {
+        height: 200px;
+    }
+    
+    .app-modal-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .app-modal-actions .btn {
+        width: 100%;
+        max-width: none;
+    }
+    
+    /* Админ панель */
+    .pending-apps {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .pending-app {
+        padding: 1rem;
+    }
+    
+    .pending-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .pending-actions .btn {
+        width: 100%;
+        max-width: none;
+    }
+    
+    /* Уведомления */
+    .notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        width: auto;
+    }
+    
+    /* Footer */
+    .footer {
+        padding: 1.5rem 0;
+        margin-top: 2rem;
+    }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    .hero-section h2 {
+        font-size: 1.5rem;
+    }
+    
+    .hero-section p {
+        font-size: 0.9rem;
+    }
+    
+    .categories-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .app-card {
+        padding: 0.875rem;
+    }
+    
+    .app-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+    
+    .app-info h3 {
+        font-size: 1rem;
+    }
+    
+    .app-info p {
+        font-size: 0.85rem;
+    }
+    
+    .submit-form {
+        padding: 1rem;
+    }
+    
+    .modal-content {
+        padding: 1rem;
+        margin: 5% auto;
+    }
+}
+
+/* Ландшафтная ориентация на мобильных */
+@media (max-width: 768px) and (orientation: landscape) {
+    .header-content {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    
+    .nav-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .hero-section {
+        padding: 1.5rem 1rem;
+    }
+    
+    .hero-section h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Улучшения для touch устройств */
+@media (hover: none) and (pointer: coarse) {
+    .nav-link,
+    .btn,
+    .app-card,
+    .category-card {
+        min-height: 44px; /* Минимальная высота для touch */
+    }
+    
+    .nav-link {
+        padding: 0.875rem 1rem;
+    }
+    
+    .btn {
+        padding: 1rem 1.5rem;
+    }
+    
+    .app-card {
+        cursor: default;
+    }
+    
+    .app-card:active {
+        transform: scale(0.98);
+    }
+    
+    .category-card:active {
+        transform: scale(0.98);
+    }
+}
+
+/* Темная тема для мобильных */
+@media (prefers-color-scheme: dark) and (max-width: 768px) {
+    body {
+        background-color: #1a1a1a;
+        color: #ffffff;
+    }
+    
+    .app-card,
+    .category-card,
+    .submit-form,
+    .pending-app {
+        background: #2d2d2d;
+        color: #ffffff;
+    }
+    
+    .modal-content {
+        background: #2d2d2d;
+        color: #ffffff;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        background: #3d3d3d;
+        color: #ffffff;
+        border-color: #555;
+    }
+}
