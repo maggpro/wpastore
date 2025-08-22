@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WPA.STORE - Магазин приложений</title>
+    <title>WPA.STORE - Магазин WPA приложений</title>
     
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="manifest.json">
@@ -13,6 +13,7 @@
     <meta name="apple-mobile-web-app-title" content="WPA.STORE">
     <link rel="apple-touch-icon" href="icons/icon-152x152.png">
     
+    <!-- Styles -->
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/components.css">
     <link rel="stylesheet" href="styles/responsive.css">
@@ -20,154 +21,212 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-store"></i>
-                    <h1>WPA.STORE</h1>
+    <!-- Device Detection Overlay -->
+    <div id="deviceDetection" class="device-detection-overlay">
+        <div class="detection-content">
+            <div class="detection-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h2>Определяем устройство...</h2>
+            <p>Автоматически переключаемся на оптимальную версию</p>
+            <div class="detection-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="mainApp" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h1>WPA.STORE</h1>
+                    </div>
+                    
+                    <nav class="nav">
+                        <ul class="nav-list">
+                            <li><a href="#home" class="nav-link active" data-page="home">Главная</a></li>
+                            <li><a href="#categories" class="nav-link" data-page="categories">Категории</a></li>
+                            <li><a href="#submit" class="nav-link" data-page="submit">Добавить приложение</a></li>
+                            <li><a href="#admin" class="nav-link" data-page="admin">Админка</a></li>
+                            <li><a href="settings.html" class="nav-link"><i class="fas fa-cog"></i></a></li>
+                        </ul>
+                    </nav>
                 </div>
-                <nav class="nav">
-                    <ul class="nav-list">
-                        <li><a href="#home" class="nav-link active" data-page="home">Главная</a></li>
-                        <li><a href="#categories" class="nav-link" data-page="categories">Категории</a></li>
-                        <li><a href="#submit" class="nav-link" data-page="submit">Добавить приложение</a></li>
-                        <li><a href="#admin" class="nav-link admin-link" data-page="admin">Админка</a></li>
-                        <li><a href="settings.html" class="nav-link"><i class="fas fa-cog"></i></a></li>
-                    </ul>
-                </nav>
+            </div>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="search-section">
+            <div class="container">
                 <div class="search-container">
-                    <input type="text" id="searchInput" placeholder="Поиск приложений...">
-                    <button id="searchBtn"><i class="fas fa-search"></i></button>
+                    <input type="text" id="searchInput" placeholder="Поиск приложений..." class="search-input">
+                    <button class="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </div>
             </div>
         </div>
-    </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Home Page -->
-        <section id="home" class="page active">
+        <!-- Main Content -->
+        <main class="main-content">
             <div class="container">
-                <div class="hero-section">
-                    <h2>Добро пожаловать в WPA.STORE</h2>
-                    <p>Ваш надежный магазин прогрессивных веб-приложений</p>
-                    
-                    <!-- PWA Install Button -->
-                    <div class="pwa-install-container" id="pwaInstallContainer" style="display: none;">
-                        <button id="pwaInstallBtn" class="btn btn-primary pwa-install-btn">
-                            <i class="fas fa-download"></i>
-                            Установить приложение
+                <!-- Home Page -->
+                <div id="homePage" class="page-content active">
+                    <!-- Hero Section -->
+                    <div class="hero-section">
+                        <div class="hero-content">
+                            <div class="hero-icon">
+                                <i class="fas fa-shopping-bag"></i>
+                            </div>
+                            <h2>Добро пожаловать в WPA.STORE</h2>
+                            <p>Откройте для себя лучшие прогрессивные веб-приложения</p>
+                            
+                            <!-- PWA Install Button -->
+                            <div class="pwa-install-container" id="pwaInstallContainer" style="display: none;">
+                                <button id="pwaInstallBtn" class="btn btn-primary pwa-install-btn">
+                                    <i class="fas fa-download"></i>
+                                    Установить приложение
+                                </button>
+                                <p class="pwa-install-hint">Установите WPA.STORE на устройство для быстрого доступа</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Featured Apps -->
+                    <div class="content-section">
+                        <h2 class="section-title">Рекомендуемые приложения</h2>
+                        <div class="apps-grid" id="featuredApps">
+                            <!-- Apps will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Recent Apps -->
+                    <div class="content-section">
+                        <h2 class="section-title">Недавно добавленные</h2>
+                        <div class="apps-grid" id="recentApps">
+                            <!-- Apps will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories Page -->
+                <div id="categoriesPage" class="page-content">
+                    <h2 class="section-title">Категории приложений</h2>
+                    <div class="categories-grid" id="categoriesGrid">
+                        <!-- Categories will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Submit Page -->
+                <div id="submitPage" class="page-content">
+                    <h2 class="section-title">Добавить приложение</h2>
+                    <form id="submitAppForm" class="submit-form">
+                        <div class="form-group">
+                            <label for="appName">Название *</label>
+                            <input type="text" id="appName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="appDescription">Описание *</label>
+                            <textarea id="appDescription" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="appCategory">Категория *</label>
+                            <select id="appCategory" required>
+                                <option value="">Выберите категорию</option>
+                                <option value="productivity">Продуктивность</option>
+                                <option value="entertainment">Развлечения</option>
+                                <option value="education">Образование</option>
+                                <option value="health">Здоровье</option>
+                                <option value="finance">Финансы</option>
+                                <option value="social">Социальные сети</option>
+                                <option value="utilities">Утилиты</option>
+                                <option value="games">Игры</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="appDeveloper">Разработчик *</label>
+                            <input type="text" id="appDeveloper" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="appVersion">Версия</label>
+                            <input type="text" id="appVersion" placeholder="1.0.0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="appWebsite">Веб-сайт</label>
+                            <input type="url" id="appWebsite" placeholder="https://example.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="appIcon">Иконка (URL)</label>
+                            <input type="url" id="appIcon" placeholder="https://example.com/icon.png">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="appScreenshots">Скриншоты (URL через запятую)</label>
+                            <textarea id="appScreenshots" placeholder="https://example.com/screen1.png, https://example.com/screen2.png"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Отправить приложение
                         </button>
-                        <p class="pwa-install-hint">Установите WPA.STORE на устройство для быстрого доступа</p>
+                    </form>
+                </div>
+
+                <!-- Admin Page -->
+                <div id="adminPage" class="page-content">
+                    <h2 class="section-title">Админ панель</h2>
+                    <div class="content-section">
+                        <h3>Ожидающие рассмотрения</h3>
+                        <div class="pending-apps" id="pendingApps">
+                            <!-- Pending apps will be loaded here -->
+                        </div>
                     </div>
                 </div>
-                
-                <div class="featured-section">
-                    <h3>Рекомендуемые приложения</h3>
-                    <div id="featuredApps" class="apps-grid"></div>
-                </div>
-                
-                <div class="recent-section">
-                    <h3>Недавно добавленные</h3>
-                    <div id="recentApps" class="apps-grid"></div>
-                </div>
             </div>
-        </section>
+        </main>
 
-        <!-- Categories Page -->
-        <section id="categories" class="page">
+        <!-- Footer -->
+        <footer class="footer">
             <div class="container">
-                <h2>Категории приложений</h2>
-                <div id="categoriesGrid" class="categories-grid"></div>
+                <p>&copy; 2024 WPA.STORE. Все права защищены.</p>
             </div>
-        </section>
+        </footer>
+    </div>
 
-        <!-- Submit App Page -->
-        <section id="submit" class="page">
-            <div class="container">
-                <h2>Добавить новое приложение</h2>
-                <form id="submitAppForm" class="submit-form">
-                    <div class="form-group">
-                        <label for="appName">Название приложения *</label>
-                        <input type="text" id="appName" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="appDescription">Описание *</label>
-                        <textarea id="appDescription" required></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="appCategory">Категория *</label>
-                        <select id="appCategory" required></select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="appDeveloper">Разработчик *</label>
-                        <input type="text" id="appDeveloper" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="appVersion">Версия</label>
-                        <input type="text" id="appVersion" placeholder="1.0.0">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="appWebsite">Веб-сайт</label>
-                        <input type="url" id="appWebsite" placeholder="https://example.com">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="appIcon">URL иконки</label>
-                        <input type="url" id="appIcon" placeholder="https://example.com/icon.png">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="appScreenshots">URL скриншотов (через запятую)</label>
-                        <input type="text" id="appScreenshots" placeholder="https://example.com/screen1.png, https://example.com/screen2.png">
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary">Отправить на рассмотрение</button>
-                </form>
-            </div>
-        </section>
-
-        <!-- Admin Page -->
-        <section id="admin" class="page">
-            <div class="container">
-                <h2>Админ панель</h2>
-                <div class="admin-controls">
-                    <button id="approveAllBtn" class="btn btn-success">Одобрить все</button>
-                    <button id="rejectAllBtn" class="btn btn-danger">Отклонить все</button>
-                </div>
-                <div id="pendingApps" class="pending-apps"></div>
-            </div>
-        </section>
-
-        <!-- App Details Modal -->
-        <div id="appModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <div id="appModalContent"></div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2024 WPA.STORE. Все права защищены.</p>
-        </div>
-    </footer>
-
-    <!-- Scripts -->
+    <!-- App Scripts -->
     <script src="js/config.js"></script>
     <script src="js/data.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/components.js"></script>
     <script src="js/github-db.js"></script>
+    <script src="js/device-detector.js"></script>
     <script src="js/app.js"></script>
+
+    <script>
+        // Автоматическое определение устройства и показ приложения
+        document.addEventListener('DOMContentLoaded', () => {
+            const deviceDetection = document.getElementById('deviceDetection');
+            const mainApp = document.getElementById('mainApp');
+            
+            // Показываем экран определения устройства
+            deviceDetection.style.display = 'flex';
+            
+            // Имитируем процесс определения (можно убрать в продакшене)
+            setTimeout(() => {
+                // Скрываем экран определения
+                deviceDetection.style.display = 'none';
+                // Показываем основное приложение
+                mainApp.style.display = 'block';
+            }, 1500);
+        });
+    </script>
 </body>
 </html>
