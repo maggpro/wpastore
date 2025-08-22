@@ -392,6 +392,38 @@ body {
     color: #333;
 }
 
+/* PWA Install Button */
+.pwa-install-container {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.pwa-install-btn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    transition: all 0.3s ease;
+}
+
+.pwa-install-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
+.pwa-install-btn i {
+    margin-right: 0.5rem;
+}
+
+.pwa-install-hint {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
 /* Footer */
 .footer {
     background: #333;

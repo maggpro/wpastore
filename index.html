@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WPA.STORE - Магазин приложений</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="WPA.STORE">
+    <link rel="apple-touch-icon" href="icons/icon-152x152.png">
+    
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/components.css">
     <link rel="stylesheet" href="styles/responsive.css">
@@ -43,6 +52,15 @@
                 <div class="hero-section">
                     <h2>Добро пожаловать в WPA.STORE</h2>
                     <p>Ваш надежный магазин прогрессивных веб-приложений</p>
+                    
+                    <!-- PWA Install Button -->
+                    <div class="pwa-install-container" id="pwaInstallContainer" style="display: none;">
+                        <button id="pwaInstallBtn" class="btn btn-primary pwa-install-btn">
+                            <i class="fas fa-download"></i>
+                            Установить приложение
+                        </button>
+                        <p class="pwa-install-hint">Установите WPA.STORE на устройство для быстрого доступа</p>
+                    </div>
                 </div>
                 
                 <div class="featured-section">

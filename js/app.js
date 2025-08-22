@@ -25,6 +25,9 @@ class WPACatalogApp {
         // Инициализация админ панели
         this.initAdminPanel();
         
+        // Инициализация PWA функциональности
+        this.initPWA();
+        
         // Загрузка начальной страницы
         this.loadPage('home');
     }
@@ -330,6 +333,65 @@ class WPACatalogApp {
             rejectAllBtn.addEventListener('click', () => {
                 this.handleBulkAction('reject');
             });
+        }
+    }
+
+    // Инициализация PWA функциональности
+    initPWA() {
+        // Регистрируем Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('ServiceWorker зарегистрирован:', registration);
+                    this.setupPWAInstall();
+                })
+                .catch(error => {
+                    console.log('Ошибка регистрации ServiceWorker:', error);
+                });
+        }
+    }
+
+    // Настройка PWA установки
+    setupPWAInstall() {
+        let deferredPrompt;
+        const installContainer = document.getElementById('pwaInstallContainer');
+        const installBtn = document.getElementById('pwaInstallBtn');
+
+        // Слушаем событие beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Показываем кнопку установки
+            if (installContainer) {
+                installContainer.style.display = 'block';
+            }
+        });
+
+        // Обработчик клика по кнопке установки
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    
+                    if (outcome === 'accepted') {
+                        Utils.showNotification('Приложение установлено!', 'success');
+                        if (installContainer) {
+                            installContainer.style.display = 'none';
+                        }
+                    }
+                    
+                    deferredPrompt = null;
+                }
+            });
+        }
+
+        // Проверяем, установлено ли уже приложение
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            if (installContainer) {
+                installContainer.style.display = 'none';
+            }
         }
     }
 
