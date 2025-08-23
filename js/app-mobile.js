@@ -622,28 +622,44 @@ class WPAMobileApp {
             }
 
             // Пытаемся получить манифест приложения
-            const manifestUrl = new URL('/manifest.json', app.website);
-            const response = await fetch(manifestUrl.href);
-            
-            if (response.ok) {
-                const manifest = await response.json();
-                this.showNotification('🎉 Приложение поддерживает PWA установку!', 'success');
+            // Формируем правильный URL для манифеста
+            let manifestUrl;
+            try {
+                // Если website заканчивается на /, добавляем manifest.json
+                if (app.website.endsWith('/')) {
+                    manifestUrl = app.website + 'manifest.json';
+                } else {
+                    // Иначе добавляем /manifest.json
+                    manifestUrl = app.website + '/manifest.json';
+                }
                 
-                // Открываем приложение для установки
-                window.open(app.website, '_blank');
-            } else {
-                // Манифест не найден, открываем как обычное веб-приложение
+                console.log('🔍 Ищем манифест по адресу:', manifestUrl);
+                const response = await fetch(manifestUrl);
+                
+                if (response.ok) {
+                    const manifest = await response.json();
+                    this.showNotification('🎉 Приложение поддерживает PWA установку!', 'success');
+                    
+                    // Открываем приложение для установки
+                    window.open(app.website, '_blank');
+                } else {
+                    // Манифест не найден, открываем как обычное веб-приложение
+                    console.log('📱 Манифест не найден, открываем как веб-приложение');
+                    this.openWPAApp(app);
+                }
+            } catch (error) {
+                console.log('PWA установка недоступна, открываем как веб-приложение');
                 this.openWPAApp(app);
             }
         } catch (error) {
-            console.log('PWA установка недоступна, открываем как веб-приложение');
+            console.log('❌ Ошибка при установке PWA:', error);
             this.openWPAApp(app);
         }
     }
 
     // Открытие WPA приложения
     openWPAApp(app) {
-        this.showNotification('🌐 Открываю приложение в новом окне', 'info');
+        this.showNotification(`🌐 Открываю "${app.name}" в новом окне`, 'info');
         
         // Открываем в новом окне/вкладке
         const newWindow = window.open(app.website, '_blank');
@@ -651,6 +667,7 @@ class WPAMobileApp {
         if (newWindow) {
             // Добавляем в историю установленных приложений
             this.addToInstalledApps(app);
+            this.showNotification(`✅ "${app.name}" добавлено в список установленных приложений`, 'success');
         } else {
             this.showNotification('❌ Не удалось открыть приложение. Возможно, заблокирован popup', 'error');
         }
