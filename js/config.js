@@ -2,10 +2,10 @@
 const WPA_CONFIG = {
     // GitHub настройки
     github: {
-        owner: 'your-username',        // Ваш GitHub username
-        repo: 'WPA.STORE',            // Название репозитория
+        owner: 'maggpro',             // GitHub username для публичного каталога
+        repo: 'wpastore',             // Название репозитория для публичного каталога
         token: '',                     // GitHub Personal Access Token (оставьте пустым для публичного доступа)
-        useIssuesAsDB: true,          // Использовать GitHub Issues как базу данных
+        useIssuesAsDB: true,          // Использовать GitHub Issues как публичную базу данных
         autoSync: true,               // Автоматическая синхронизация
         syncInterval: 5 * 60 * 1000   // Интервал синхронизации (5 минут)
     },
