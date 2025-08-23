@@ -64,6 +64,26 @@ const WPA_DATA = {
     apps: [
         {
             id: 1,
+            name: 'Calm - Дыхательные упражнения',
+            description: 'Приложение для медитации и дыхательных упражнений. Помогает снять стресс, улучшить сон и общее самочувствие. Включает различные техники дыхания, звуки природы и управляемые медитации.',
+            category: 'health',
+            developer: 'MaggPro',
+            version: '1.0.0',
+            rating: 4.9,
+            downloads: 25000,
+            website: 'https://maggpro.github.io/calm/#breath',
+            icon: 'https://maggpro.github.io/calm/assets/icon-192.png',
+            screenshots: [
+                'https://maggpro.github.io/calm/assets/screenshot1.png',
+                'https://maggpro.github.io/calm/assets/screenshot2.png'
+            ],
+            features: ['Дыхательные упражнения', 'Медитации', 'Звуки природы', 'Таймер сна', 'Отслеживание прогресса'],
+            status: 'approved',
+            featured: true,
+            dateAdded: '2024-01-20'
+        },
+        {
+            id: 2,
             name: 'WPA Task Manager',
             description: 'Мощный менеджер задач с возможностью создания проектов, установки дедлайнов и отслеживания прогресса.',
             category: 'productivity',
@@ -82,7 +102,7 @@ const WPA_DATA = {
             dateAdded: '2024-01-15'
         },
         {
-            id: 2,
+            id: 3,
             name: 'WPA Chat',
             description: 'Быстрый и безопасный мессенджер для общения с друзьями и коллегами.',
             category: 'social',

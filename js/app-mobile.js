@@ -547,16 +547,27 @@ class WPAMobileApp {
         const card = document.createElement('div');
         card.className = 'app-card';
         card.innerHTML = `
-            <div class="app-icon">
-                <i class="fas fa-mobile-alt"></i>
-            </div>
-            <div class="app-info">
-                <h3>${app.name}</h3>
-                <p>${app.description}</p>
-                <div class="app-meta">
-                    <span class="developer">${app.developer}</span>
-                    <span class="category">${this.getCategoryName(app.category)}</span>
+            <div class="app-card-header">
+                <div class="app-icon">
+                    ${app.icon ? `<img src="${app.icon}" alt="${app.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">` : ''}
+                    <i class="fas fa-mobile-alt" style="display: ${app.icon ? 'none' : 'block'};"></i>
                 </div>
+                <div class="app-info">
+                    <h3 class="app-name">${app.name}</h3>
+                    <p class="app-description">${app.description}</p>
+                    <div class="app-meta">
+                        <span class="developer">👨‍💻 ${app.developer}</span>
+                        <span class="category">📂 ${this.getCategoryName(app.category)}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="app-card-actions">
+                <button class="button button-small button-outline info-btn" onclick="event.stopPropagation(); mobileApp.showAppDetails(${JSON.stringify(app).replace(/"/g, '&quot;')})">
+                    <i class="fas fa-info-circle"></i> Подробнее
+                </button>
+                ${app.website ? `<button class="button button-small button-fill install-btn" onclick="event.stopPropagation(); mobileApp.installWPAApp(${JSON.stringify(app).replace(/"/g, '&quot;')})">
+                    <i class="fas fa-download"></i> Установить
+                </button>` : ''}
             </div>
         `;
         
@@ -565,6 +576,90 @@ class WPAMobileApp {
         });
         
         return card;
+    }
+
+    // Установка WPA приложения
+    installWPAApp(app) {
+        console.log('📱 Установка WPA приложения:', app.name);
+        
+        if (!app.website) {
+            this.showNotification('❌ У приложения нет веб-сайта для установки', 'error');
+            return;
+        }
+
+        // Проверяем, поддерживает ли браузер установку PWA
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            // Пытаемся установить как PWA
+            this.installAsPWA(app);
+        } else {
+            // Fallback: открываем в новом окне
+            this.openWPAApp(app);
+        }
+    }
+
+    // Установка как PWA
+    async installAsPWA(app) {
+        try {
+            // Проверяем, есть ли уже установленное приложение
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                this.showNotification('ℹ️ Приложение уже установлено', 'info');
+                return;
+            }
+
+            // Пытаемся получить манифест приложения
+            const manifestUrl = new URL('/manifest.json', app.website);
+            const response = await fetch(manifestUrl.href);
+            
+            if (response.ok) {
+                const manifest = await response.json();
+                this.showNotification('🎉 Приложение поддерживает PWA установку!', 'success');
+                
+                // Открываем приложение для установки
+                window.open(app.website, '_blank');
+            } else {
+                // Манифест не найден, открываем как обычное веб-приложение
+                this.openWPAApp(app);
+            }
+        } catch (error) {
+            console.log('PWA установка недоступна, открываем как веб-приложение');
+            this.openWPAApp(app);
+        }
+    }
+
+    // Открытие WPA приложения
+    openWPAApp(app) {
+        this.showNotification('🌐 Открываю приложение в новом окне', 'info');
+        
+        // Открываем в новом окне/вкладке
+        const newWindow = window.open(app.website, '_blank');
+        
+        if (newWindow) {
+            // Добавляем в историю установленных приложений
+            this.addToInstalledApps(app);
+        } else {
+            this.showNotification('❌ Не удалось открыть приложение. Возможно, заблокирован popup', 'error');
+        }
+    }
+
+    // Добавление в список установленных приложений
+    addToInstalledApps(app) {
+        try {
+            const installedApps = JSON.parse(localStorage.getItem('wpa_installed_apps') || '[]');
+            const existingIndex = installedApps.findIndex(installed => installed.website === app.website);
+            
+            if (existingIndex === -1) {
+                installedApps.push({
+                    ...app,
+                    installedAt: new Date().toISOString(),
+                    lastUsed: new Date().toISOString()
+                });
+                
+                localStorage.setItem('wpa_installed_apps', JSON.stringify(installedApps));
+                console.log('✅ Приложение добавлено в список установленных');
+            }
+        } catch (error) {
+            console.error('Ошибка сохранения в список установленных:', error);
+        }
     }
 
     // Создание карточки категории
@@ -578,10 +673,13 @@ class WPAMobileApp {
         card.className = 'category-card';
         card.innerHTML = `
             <div class="category-icon">
-                <i class="fas fa-folder"></i>
+                <i class="fas ${this.getCategoryIcon(category.id)}"></i>
             </div>
-            <h3>${category.name}</h3>
-            <p>${category.description || 'Описание категории'}</p>
+            <div class="category-content">
+                <h3 class="category-name">${category.name}</h3>
+                <p class="category-description">${category.description || 'Приложения в этой категории'}</p>
+                <div class="category-count">${this.getCategoryAppCount(category.id)} приложений</div>
+            </div>
         `;
         
         card.addEventListener('click', () => {
@@ -642,6 +740,29 @@ class WPAMobileApp {
         return 'Неизвестно';
     }
 
+    // Получение иконки категории
+    getCategoryIcon(categoryId) {
+        const iconMap = {
+            'productivity': 'fa-briefcase',
+            'entertainment': 'fa-gamepad',
+            'education': 'fa-graduation-cap',
+            'health': 'fa-heartbeat',
+            'finance': 'fa-chart-line',
+            'social': 'fa-users',
+            'utilities': 'fa-tools',
+            'games': 'fa-dice'
+        };
+        return iconMap[categoryId] || 'fa-folder';
+    }
+
+    // Получение количества приложений в категории
+    getCategoryAppCount(categoryId) {
+        if (typeof WPA_DATA !== 'undefined') {
+            return WPA_DATA.apps.filter(app => app.category === categoryId && app.status !== 'rejected').length;
+        }
+        return 0;
+    }
+
     // Показать детали приложения
     showAppDetails(app) {
         console.log('📱 Показать детали приложения:', app.name);
@@ -652,18 +773,61 @@ class WPAMobileApp {
         modal.innerHTML = `
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2>${app.name}</h2>
+                    <div class="modal-app-info">
+                        <div class="modal-app-icon">
+                            ${app.icon ? `<img src="${app.icon}" alt="${app.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">` : ''}
+                            <i class="fas fa-mobile-alt" style="display: ${app.icon ? 'none' : 'block'};"></i>
+                        </div>
+                        <div class="modal-app-title">
+                            <h2>${app.name}</h2>
+                            <p class="modal-app-developer">👨‍💻 ${app.developer}</p>
+                        </div>
+                    </div>
                     <button class="close-btn">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <p>${app.description}</p>
-                    <div class="app-details">
-                        <p><strong>Разработчик:</strong> ${app.developer}</p>
-                        <p><strong>Категория:</strong> ${this.getCategoryName(app.category)}</p>
-                        ${app.version ? `<p><strong>Версия:</strong> ${app.version}</p>` : ''}
-                        ${app.website ? `<p><strong>Сайт:</strong> <a href="${app.website}" target="_blank">${app.website}</a></p>` : ''}
+                    <div class="app-description-section">
+                        <h3>📝 Описание</h3>
+                        <p>${app.description}</p>
                     </div>
-                    ${app.website ? `<a href="${app.website}" target="_blank" class="button button-fill button-large">Открыть приложение</a>` : ''}
+                    
+                    <div class="app-details-section">
+                        <h3>ℹ️ Детали</h3>
+                        <div class="app-details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">📂 Категория:</span>
+                                <span class="detail-value">${this.getCategoryName(app.category)}</span>
+                            </div>
+                            ${app.version ? `<div class="detail-item">
+                                <span class="detail-label">🏷️ Версия:</span>
+                                <span class="detail-value">${app.version}</span>
+                            </div>` : ''}
+                            ${app.website ? `<div class="detail-item">
+                                <span class="detail-label">🌐 Сайт:</span>
+                                <span class="detail-value"><a href="${app.website}" target="_blank">${app.website}</a></span>
+                            </div>` : ''}
+                        </div>
+                    </div>
+                    
+                    ${app.screenshots && app.screenshots.length > 0 ? `
+                    <div class="app-screenshots-section">
+                        <h3>📸 Скриншоты</h3>
+                        <div class="screenshots-grid">
+                            ${app.screenshots.map(screenshot => `
+                                <img src="${screenshot}" alt="Скриншот ${app.name}" onclick="window.open('${screenshot}', '_blank')">
+                            `).join('')}
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="modal-actions">
+                        ${app.website ? `<button class="button button-fill button-large install-btn" onclick="mobileApp.installWPAApp(${JSON.stringify(app).replace(/"/g, '&quot;')})">
+                            <i class="fas fa-download"></i> Установить приложение
+                        </button>` : ''}
+                        <button class="button button-outline button-large" onclick="window.open('${app.website}', '_blank')">
+                            <i class="fas fa-external-link-alt"></i> Открыть в браузере
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
