@@ -200,8 +200,25 @@ const DataManager = {
             const saved = localStorage.getItem('wpa_catalog_data');
             if (saved) {
                 const parsed = JSON.parse(saved);
+                
+                // Проверяем, есть ли в сохраненных данных тестовые приложения
+                const hasTestApps = parsed.apps && parsed.apps.some(app => 
+                    app.name.includes('WPA Task Manager') || 
+                    app.name.includes('WPA Chat') || 
+                    app.name.includes('WPA Fitness') ||
+                    app.name.includes('WPA Language') ||
+                    app.name.includes('WPA Budget')
+                );
+                
+                if (hasTestApps) {
+                    console.log('⚠️ Обнаружены тестовые приложения в LocalStorage, очищаем...');
+                    localStorage.removeItem('wpa_catalog_data');
+                    return; // Не загружаем старые данные
+                }
+                
+                // Загружаем только если нет тестовых данных
                 Object.assign(WPA_DATA, parsed);
-                console.log('Данные загружены из LocalStorage');
+                console.log('✅ Данные загружены из LocalStorage (без тестовых приложений)');
             }
         } catch (error) {
             console.error('Ошибка загрузки из LocalStorage:', error);
