@@ -270,21 +270,50 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     padding: 1rem;
+    max-width: 100%;
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+    .categories-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 0.75rem;
+    }
 }
 
 .category-card {
     background: white;
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 1.5rem 1rem;
     text-align: center;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     transition: all 0.3s ease;
-    border: 1px solid #f0f0f0;
+    border: 2px solid transparent;
     cursor: pointer;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.75rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.category-card:hover::before,
+.category-card:active::before {
+    opacity: 1;
 }
 
 .category-card:hover {
@@ -293,17 +322,38 @@
     border-color: var(--f7-theme-color);
 }
 
+.category-card:active {
+    transform: translateY(-1px) scale(0.98);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Touch improvements for mobile */
+@media (hover: none) and (pointer: coarse) {
+    .category-card:active {
+        transform: scale(0.95);
+        background: rgba(102, 126, 234, 0.05);
+    }
+}
+
 .category-icon {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     background: linear-gradient(135deg, var(--f7-theme-color), var(--f7-theme-color-tint));
-    border-radius: 16px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: white;
     margin: 0;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.category-card:hover .category-icon {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
 .category-card h3 {
@@ -662,6 +712,19 @@
     .tab-link:active {
         background: rgba(102, 126, 234, 0.2);
     }
+}
+
+/* Visual feedback for clickable elements */
+.category-card,
+.app-card {
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.category-card:focus,
+.app-card:focus {
+    outline: 2px solid var(--f7-theme-color);
+    outline-offset: 2px;
 }
 
 /* Modal Styles */

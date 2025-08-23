@@ -384,17 +384,32 @@ class WPAMobileApp {
         console.log('📂 Загрузка страницы категорий...');
         
         const categoriesContainer = document.getElementById('categoriesGrid');
+        console.log('🔍 Контейнер категорий:', categoriesContainer);
+        console.log('📊 WPA_DATA доступен:', typeof WPA_DATA !== 'undefined');
+        
         if (categoriesContainer && typeof WPA_DATA !== 'undefined') {
             categoriesContainer.innerHTML = '';
-            WPA_DATA.categories.forEach(category => {
+            console.log('📋 Категории для загрузки:', WPA_DATA.categories);
+            
+            WPA_DATA.categories.forEach((category, index) => {
+                console.log(`🎯 Создание карточки для категории ${index + 1}:`, category.name);
                 const card = this.createCategoryCard(category);
                 if (card) {
                     categoriesContainer.appendChild(card);
+                    console.log(`✅ Карточка ${category.name} добавлена`);
+                } else {
+                    console.error(`❌ Не удалось создать карточку для ${category.name}`);
                 }
             });
             console.log('✅ Загружено категорий:', WPA_DATA.categories.length);
         } else {
-            console.error('❌ Контейнер категорий не найден');
+            console.error('❌ Контейнер категорий не найден или WPA_DATA недоступен');
+            if (!categoriesContainer) {
+                console.error('❌ categoriesContainer не найден');
+            }
+            if (typeof WPA_DATA === 'undefined') {
+                console.error('❌ WPA_DATA не определен');
+            }
         }
     }
 
@@ -664,7 +679,10 @@ class WPAMobileApp {
 
     // Создание карточки категории
     createCategoryCard(category) {
+        console.log(`🎨 Создание карточки для категории: ${category.name}`);
+        
         if (typeof Components !== 'undefined') {
+            console.log('🔧 Используем Components.createCategoryCard');
             return Components.createCategoryCard(category);
         }
         
@@ -682,10 +700,20 @@ class WPAMobileApp {
             </div>
         `;
         
-        card.addEventListener('click', () => {
+        console.log(`🎯 Добавляем обработчик клика для ${category.name}`);
+        card.addEventListener('click', (e) => {
+            console.log(`👆 Клик по карточке категории: ${category.name}`);
+            e.preventDefault();
+            e.stopPropagation();
             this.showCategoryApps(category);
         });
         
+        // Добавляем обработчик для touch событий
+        card.addEventListener('touchstart', (e) => {
+            console.log(`👆 Touch start по карточке категории: ${category.name}`);
+        });
+        
+        console.log(`✅ Карточка ${category.name} создана и настроена`);
         return card;
     }
 
