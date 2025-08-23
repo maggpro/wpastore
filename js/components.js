@@ -8,27 +8,37 @@ const Components = {
         card.dataset.appId = app.id;
         
         card.innerHTML = `
-            <div class="app-icon">
-                ${app.icon ? `<img src="${app.icon}" alt="${app.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <span style="display: none;">${app.name.charAt(0)}</span>` : 
-                `<span>${app.name.charAt(0)}</span>`}
+            <div class="app-card-header">
+                <div class="app-icon">
+                    ${app.icon ? `<img src="${app.icon}" alt="${app.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` : ''}
+                    <i class="fas fa-mobile-alt" style="display: ${app.icon ? 'none' : 'flex'};"></i>
+                </div>
+                <div class="app-info">
+                    <h3 class="app-name">${app.name}</h3>
+                    <p class="app-description">${app.description.length > 100 ? app.description.substring(0, 100) + '...' : app.description}</p>
+                    <div class="app-meta">
+                        <span class="developer">👨‍💻 ${app.developer}</span>
+                        <span class="category">📂 ${category ? category.name : 'Без категории'}</span>
+                    </div>
+                </div>
             </div>
-            <div class="app-info">
-                <h3>${app.name}</h3>
-                <p>${app.description.length > 100 ? app.description.substring(0, 100) + '...' : app.description}</p>
-                <div class="app-meta">
-                    <span class="app-category">${category ? category.name : 'Без категории'}</span>
-                    <span class="app-rating">${Utils.createRatingStars(app.rating)} ${Utils.formatRating(app.rating)}</span>
-                </div>
-                <div class="app-meta">
-                    <span class="app-developer">${app.developer}</span>
-                    <span class="app-downloads">${Utils.formatDownloads(app.downloads)} загрузок</span>
-                </div>
+            <div class="app-card-actions">
+                <button class="button button-small button-outline info-btn" onclick="event.stopPropagation(); window.mobileApp && window.mobileApp.showAppDetails(${JSON.stringify(app).replace(/"/g, '&quot;')})">
+                    <i class="fas fa-info-circle"></i> Подробнее
+                </button>
+                ${app.website ? `<button class="button button-small button-fill install-btn" onclick="event.stopPropagation(); window.mobileApp && window.mobileApp.installWPAApp(${JSON.stringify(app).replace(/"/g, '&quot;')})">
+                    <i class="fas fa-download"></i> Установить
+                </button>` : ''}
             </div>
         `;
         
-        // Обработчик клика для открытия модала
-        card.addEventListener('click', () => {
+        // Обработчик клика для открытия модала (если кликнули не по кнопке)
+        card.addEventListener('click', (e) => {
+            // Если кликнули по кнопке, не открываем модал
+            if (e.target.closest('.app-card-actions')) {
+                return;
+            }
+            
             if (window.mobileApp && typeof window.mobileApp.showAppDetails === 'function') {
                 window.mobileApp.showAppDetails(app);
             } else {
@@ -54,9 +64,11 @@ const Components = {
             <div class="category-icon">
                 <i class="${category.icon}" style="color: ${category.color}"></i>
             </div>
-            <h3>${category.name}</h3>
-            <p>${category.description}</p>
-            <div class="category-count">${appsCount} приложений</div>
+            <div class="category-content">
+                <h3 class="category-name">${category.name}</h3>
+                <p class="category-description">${category.description}</p>
+                <div class="category-count">${appsCount} приложений</div>
+            </div>
         `;
         
         // Обработчик клика для показа приложений категории
