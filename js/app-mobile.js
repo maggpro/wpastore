@@ -1291,6 +1291,12 @@ let mobileApp;
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🌐 DOM загружен, создаем мобильное приложение...');
     mobileApp = new WPAMobileApp();
+    
+    // Делаем mobileApp доступным глобально
+    window.mobileApp = mobileApp;
+    window.wpaMobileApp = mobileApp; // Альтернативное имя для совместимости
+    
+    console.log('✅ mobileApp добавлен в window:', !!window.mobileApp);
 });
 
 

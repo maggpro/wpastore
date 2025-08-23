@@ -23,10 +23,10 @@ const Components = {
                 </div>
             </div>
             <div class="app-card-actions">
-                <button class="button button-small button-outline info-btn" onclick="event.stopPropagation(); window.mobileApp && window.mobileApp.showAppDetails(${JSON.stringify(app).replace(/"/g, '&quot;')})">
+                <button class="button button-small button-outline info-btn" onclick="event.stopPropagation(); (window.mobileApp || window.wpaMobileApp) && (window.mobileApp || window.wpaMobileApp).showAppDetails(${JSON.stringify(app).replace(/"/g, '&quot;')})">
                     <i class="fas fa-info-circle"></i> Подробнее
                 </button>
-                ${app.website ? `<button class="button button-small button-fill install-btn" onclick="event.stopPropagation(); window.mobileApp && window.mobileApp.installWPAApp(${JSON.stringify(app).replace(/"/g, '&quot;')})">
+                ${app.website ? `<button class="button button-small button-fill install-btn" onclick="event.stopPropagation(); (window.mobileApp || window.wpaMobileApp) && (window.mobileApp || window.wpaMobileApp).installWPAApp(${JSON.stringify(app).replace(/"/g, '&quot;')})">
                     <i class="fas fa-download"></i> Установить
                 </button>` : ''}
             </div>
@@ -39,18 +39,58 @@ const Components = {
                 return;
             }
             
-            if (window.mobileApp && typeof window.mobileApp.showAppDetails === 'function') {
-                window.mobileApp.showAppDetails(app);
+            // Пытаемся найти mobileApp
+            const mobileApp = window.mobileApp || window.wpaMobileApp;
+            
+            if (mobileApp && typeof mobileApp.showAppDetails === 'function') {
+                mobileApp.showAppDetails(app);
             } else {
-                console.warn('mobileApp.showAppDetails не доступен');
-                // Fallback: открываем в новом окне
-                if (app.website) {
-                    window.open(app.website, '_blank');
-                }
+                console.warn('mobileApp.showAppDetails не доступен, используем fallback');
+                // Fallback: показываем базовую информацию
+                this.showBasicAppInfo(app);
             }
         });
         
         return card;
+    },
+
+    // Fallback функция для показа базовой информации о приложении
+    showBasicAppInfo(app) {
+        console.log('📱 Показ базовой информации о приложении:', app.name);
+        
+        // Создаем простое модальное окно
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>${app.name}</h2>
+                    <button class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Описание:</strong> ${app.description}</p>
+                    <p><strong>Разработчик:</strong> ${app.developer}</p>
+                    <p><strong>Категория:</strong> ${app.category}</p>
+                    ${app.website ? `<p><strong>Сайт:</strong> <a href="${app.website}" target="_blank">${app.website}</a></p>` : ''}
+                    ${app.website ? `<a href="${app.website}" target="_blank" class="button button-fill button-large">Открыть приложение</a>` : ''}
+                </div>
+            </div>
+        `;
+        
+        // Добавляем обработчик закрытия
+        const closeBtn = modal.querySelector('.close-btn');
+        closeBtn.addEventListener('click', () => {
+            modal.remove();
+        });
+        
+        // Закрытие по клику вне модального окна
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+        
+        document.body.appendChild(modal);
     },
 
     // Создание карточки категории
@@ -73,10 +113,13 @@ const Components = {
         
         // Обработчик клика для показа приложений категории
         card.addEventListener('click', () => {
-            if (window.mobileApp && typeof window.mobileApp.showCategoryApps === 'function') {
-                window.mobileApp.showCategoryApps(category);
+            // Пытаемся найти mobileApp
+            const mobileApp = window.mobileApp || window.wpaMobileApp;
+            
+            if (mobileApp && typeof mobileApp.showCategoryApps === 'function') {
+                mobileApp.showCategoryApps(category);
             } else {
-                console.warn('mobileApp.showCategoryApps не доступен');
+                console.warn('mobileApp.showCategoryApps не доступен, используем fallback');
                 // Fallback: показываем все приложения
                 if (window.location.hash !== '#home') {
                     window.location.hash = '#home';
@@ -117,8 +160,11 @@ const Components = {
         
         approveBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (window.mobileApp && typeof window.mobileApp.approveApp === 'function') {
-                window.mobileApp.approveApp(app.id);
+            // Пытаемся найти mobileApp
+            const mobileApp = window.mobileApp || window.wpaMobileApp;
+            
+            if (mobileApp && typeof mobileApp.approveApp === 'function') {
+                mobileApp.approveApp(app.id);
             } else {
                 console.warn('mobileApp.approveApp не доступен');
             }
@@ -126,8 +172,11 @@ const Components = {
         
         rejectBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (window.mobileApp && typeof window.mobileApp.rejectApp === 'function') {
-                window.mobileApp.rejectApp(app.id);
+            // Пытаемся найти mobileApp
+            const mobileApp = window.mobileApp || window.wpaMobileApp;
+            
+            if (mobileApp && typeof mobileApp.rejectApp === 'function') {
+                mobileApp.rejectApp(app.id);
             } else {
                 console.warn('mobileApp.rejectApp не доступен');
             }
