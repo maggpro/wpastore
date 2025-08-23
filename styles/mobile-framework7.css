@@ -1083,3 +1083,43 @@
 .back-to-all-btn:active {
     transform: scale(0.98);
 }
+
+/* Стили для iOS инструкций */
+.ios-install-steps {
+    padding: 20px 0;
+}
+
+.ios-install-steps h3 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.ios-install-steps ol {
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+
+.ios-install-steps li {
+    margin-bottom: 10px;
+    line-height: 1.5;
+    color: #555;
+}
+
+.ios-install-steps strong {
+    color: #333;
+}
+
+.ios-install-note {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.ios-install-note p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 14px;
+}

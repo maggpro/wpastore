@@ -677,6 +677,26 @@ class WPAMobileApp {
     async installPWA(manifest, app) {
         console.log('🚀 Попытка установки PWA:', app.name);
         
+        // Определяем платформу
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+        
+        console.log('📱 Платформа:', { isIOS, isSafari, userAgent: navigator.userAgent });
+        
+        // Проверяем, есть ли уже установленное приложение
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('✅ Приложение уже установлено');
+            this.showNotification('ℹ️ Приложение уже установлено на ваше устройство', 'info');
+            return;
+        }
+
+        // Специальная логика для iOS
+        if (isIOS) {
+            console.log('🍎 iOS устройство, показываем специальные инструкции');
+            this.showIOSInstallInstructions(app);
+            return;
+        }
+
         // Проверяем, поддерживает ли браузер установку PWA
         if (!('BeforeInstallPromptEvent' in window)) {
             console.log('📱 Браузер не поддерживает PWA установку');
@@ -685,14 +705,7 @@ class WPAMobileApp {
             return;
         }
 
-        // Проверяем, есть ли уже установленное приложение
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            console.log('✅ Приложение уже установлено');
-            this.showNotification('ℹ️ Приложение уже установлено на ваше устройство', 'info');
-            return;
-        }
-
-        // Пытаемся показать prompt для установки
+        // Стандартная PWA установка для других платформ
         try {
             // Открываем приложение в новом окне для установки
             const newWindow = window.open(app.website, '_blank');
@@ -714,6 +727,66 @@ class WPAMobileApp {
             console.log('❌ Ошибка при открытии PWA:', error);
             this.openWPAApp(app);
         }
+    }
+
+    // Показать инструкции по установке для iOS
+    showIOSInstallInstructions(app) {
+        console.log('🍎 Показываем инструкции для iOS');
+        
+        // Создаем модальное окно с инструкциями
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>🍎 Установка на iOS</h2>
+                    <button class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="ios-install-steps">
+                        <h3>Как установить "${app.name}" на iOS:</h3>
+                        <ol>
+                            <li><strong>Откройте приложение в Safari</strong> (не в других браузерах)</li>
+                            <li><strong>Нажмите кнопку "Поделиться"</strong> (квадрат со стрелкой внизу)</li>
+                            <li><strong>Выберите "На экран "Домой""</strong></li>
+                            <li><strong>Нажмите "Добавить"</strong></li>
+                        </ol>
+                        <div class="ios-install-note">
+                            <p><strong>Важно:</strong> PWA установка работает только в Safari на iOS</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="button button-fill button-large" onclick="window.open('${app.website}', '_blank')">
+                        <i class="fas fa-external-link-alt"></i>
+                        Открыть в Safari
+                    </button>
+                    <button class="close-btn button button-outline button-large">
+                        Закрыть
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Добавляем обработчики закрытия
+        const closeBtns = modal.querySelectorAll('.close-btn');
+        closeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                modal.remove();
+            });
+        });
+        
+        // Закрытие по клику вне модального окна
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+        
+        document.body.appendChild(modal);
+        
+        // Добавляем в историю установленных приложений
+        this.addToInstalledApps(app);
     }
 
     // Открытие WPA приложения
