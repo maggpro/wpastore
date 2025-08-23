@@ -225,6 +225,11 @@
                 deviceDetection.style.display = 'none';
                 // Показываем основное приложение
                 mainApp.style.display = 'block';
+                
+                // Инициализируем приложение после показа
+                if (window.wpaCatalogApp) {
+                    window.wpaCatalogApp.init();
+                }
             }, 1500);
         });
     </script>

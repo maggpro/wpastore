@@ -3,10 +3,13 @@ class WPACatalogApp {
     constructor() {
         this.currentPage = 'home';
         this.searchQuery = '';
-        this.init();
+        console.log('WPA.STORE приложение создано, ожидает инициализации...');
+        // this.init(); // Инициализация будет вызвана позже
     }
 
     init() {
+        console.log('Инициализация WPA.STORE приложения...');
+        
         // Инициализация компонентов
         Components.init();
         
@@ -36,11 +39,16 @@ class WPACatalogApp {
         if (homePage) {
             homePage.style.display = 'block';
             homePage.classList.add('active');
+            console.log('Главная страница показана');
         }
+        
+        console.log('Инициализация завершена');
     }
 
     // Инициализация страниц
     initPages() {
+        console.log('Инициализация страниц...');
+        
         // Заполняем категории в форме добавления приложения
         const categorySelect = document.getElementById('appCategory');
         if (categorySelect) {
@@ -53,17 +61,27 @@ class WPACatalogApp {
                 option.textContent = category.name;
                 categorySelect.appendChild(option);
             });
+            
+            console.log('Категории добавлены в форму:', WPA_DATA.categories.length);
+        } else {
+            console.error('Селект категорий не найден');
         }
     }
 
     // Инициализация навигации
     initNavigation() {
-        const navLinks = document.querySelectorAll('.nav-link');
+        console.log('Инициализация навигации...');
         
-        navLinks.forEach(link => {
+        const navLinks = document.querySelectorAll('.nav-link');
+        console.log('Найдено ссылок навигации:', navLinks.length);
+        
+        navLinks.forEach((link, index) => {
+            console.log(`Настройка ссылки ${index + 1}:`, link.dataset.page);
+            
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const page = link.dataset.page;
+                console.log('Клик по ссылке:', page);
                 this.navigateToPage(page);
             });
         });
@@ -71,11 +89,13 @@ class WPACatalogApp {
         // Обработка хэша в URL
         window.addEventListener('hashchange', () => {
             const hash = window.location.hash.slice(1) || 'home';
+            console.log('Изменение хэша:', hash);
             this.navigateToPage(hash);
         });
 
         // Обработка начального хэша
         const initialHash = window.location.hash.slice(1) || 'home';
+        console.log('Начальный хэш:', initialHash);
         this.navigateToPage(initialHash);
     }
 
@@ -112,15 +132,19 @@ class WPACatalogApp {
         const activeLink = document.querySelector(`[data-page="${pageName}"]`);
         if (activeLink) {
             activeLink.classList.add('active');
+            console.log('Активная ссылка обновлена:', pageName);
+        } else {
+            console.warn('Ссылка для страницы не найдена:', pageName);
         }
 
         // Загружаем контент страницы
         this.loadPage(pageName);
-        }
     }
 
     // Загрузка контента страницы
     loadPage(pageName) {
+        console.log('Загрузка контента для страницы:', pageName);
+        
         switch (pageName) {
             case 'home':
                 this.loadHomePage();
@@ -134,11 +158,15 @@ class WPACatalogApp {
             case 'admin':
                 this.loadAdminPage();
                 break;
+            default:
+                console.warn('Неизвестная страница:', pageName);
         }
     }
 
     // Загрузка главной страницы
     async loadHomePage() {
+        console.log('Загрузка главной страницы...');
+        
         try {
             // Проверяем, настроен ли GitHub
             const useGitHub = ConfigManager.get('github.useIssuesAsDB', false);
@@ -180,6 +208,8 @@ class WPACatalogApp {
 
     // Рендеринг приложений
     renderApps(apps, containerId) {
+        console.log(`Рендеринг приложений в контейнер: ${containerId}`);
+        
         const container = document.getElementById(containerId);
         if (container) {
             container.innerHTML = '';
@@ -202,6 +232,8 @@ class WPACatalogApp {
 
     // Загрузка страницы категорий
     loadCategoriesPage() {
+        console.log('Загрузка страницы категорий...');
+        
         const categoriesContainer = document.getElementById('categoriesGrid');
         if (categoriesContainer) {
             categoriesContainer.innerHTML = '';
@@ -212,6 +244,8 @@ class WPACatalogApp {
                 }
             });
             console.log('Загружено категорий:', WPA_DATA.categories.length);
+        } else {
+            console.error('Контейнер категорий не найден');
         }
     }
     
@@ -222,6 +256,7 @@ class WPACatalogApp {
 
     // Загрузка страницы добавления приложения
     loadSubmitPage() {
+        console.log('Загрузка страницы добавления приложения...');
         // Форма уже инициализирована в initPages()
         // Здесь можно добавить дополнительную логику
         console.log('Страница добавления приложения загружена');
@@ -229,11 +264,14 @@ class WPACatalogApp {
 
     // Загрузка админ страницы
     loadAdminPage() {
+        console.log('Загрузка админ страницы...');
         this.loadPendingApps();
     }
     
     // Загрузка ожидающих приложений
     loadPendingApps() {
+        console.log('Загрузка ожидающих приложений...');
+        
         const pendingContainer = document.getElementById('pendingApps');
         if (pendingContainer) {
             pendingContainer.innerHTML = '';
@@ -251,15 +289,21 @@ class WPACatalogApp {
             } else {
                 pendingContainer.innerHTML = '<p class="no-apps">Нет приложений на рассмотрении</p>';
             }
+        } else {
+            console.error('Контейнер ожидающих приложений не найден');
         }
     }
 
     // Инициализация поиска
     initSearch() {
+        console.log('Инициализация поиска...');
+        
         const searchInput = document.getElementById('searchInput');
         const searchBtn = document.querySelector('.search-button');
 
         if (searchInput && searchBtn) {
+            console.log('Поиск инициализирован');
+            
             // Поиск по кнопке
             searchBtn.addEventListener('click', () => {
                 this.performSearch(searchInput.value);
@@ -280,11 +324,15 @@ class WPACatalogApp {
             searchInput.addEventListener('input', (e) => {
                 debouncedSearch(e.target.value);
             });
+        } else {
+            console.error('Элементы поиска не найдены');
         }
     }
 
     // Выполнение поиска
     performSearch(query) {
+        console.log('Выполнение поиска:', query);
+        
         this.searchQuery = query.trim();
         
         if (!this.searchQuery) {
@@ -319,7 +367,13 @@ class WPACatalogApp {
         `;
 
         // Показываем страницу результатов
-        document.querySelector('.main-content .container').appendChild(searchPage);
+        const mainContainer = document.querySelector('.main-content .container');
+        if (mainContainer) {
+            mainContainer.appendChild(searchPage);
+        } else {
+            console.error('Основной контейнер не найден');
+            return;
+        }
         
         // Скрываем все остальные страницы
         document.querySelectorAll('.page-content').forEach(page => {
@@ -331,41 +385,59 @@ class WPACatalogApp {
 
         // Заполняем результаты
         const resultsGrid = searchPage.querySelector('#searchResultsGrid');
-        if (searchResults.length > 0) {
-            searchResults.forEach(app => {
-                resultsGrid.appendChild(Components.createAppCard(app));
-            });
+        if (resultsGrid) {
+            if (searchResults.length > 0) {
+                searchResults.forEach(app => {
+                    const card = Components.createAppCard(app);
+                    if (card) {
+                        resultsGrid.appendChild(card);
+                    }
+                });
+            } else {
+                resultsGrid.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search" style="font-size: 4rem; color: #ccc; margin-bottom: 1rem;"></i>
+                        <h3>Ничего не найдено</h3>
+                        <p>Попробуйте изменить поисковый запрос</p>
+                    </div>
+                `;
+            }
         } else {
-            resultsGrid.innerHTML = `
-                <div class="no-results">
-                    <i class="fas fa-search" style="font-size: 4rem; color: #ccc; margin-bottom: 1rem;"></i>
-                    <h3>Ничего не найдено</h3>
-                    <p>Попробуйте изменить поисковый запрос</p>
-                </div>
-            `;
+            console.error('Сетка результатов поиска не найдена');
         }
 
         // Обработчик кнопки "Назад"
         const backBtn = searchPage.querySelector('.back-btn');
-        backBtn.addEventListener('click', () => {
-            searchPage.remove();
-            this.navigateToPage('home');
-        });
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                searchPage.remove();
+                this.navigateToPage('home');
+            });
+        } else {
+            console.error('Кнопка "Назад" не найдена');
+        }
     }
 
     // Инициализация форм
     initForms() {
+        console.log('Инициализация форм...');
+        
         const submitForm = document.getElementById('submitAppForm');
         if (submitForm) {
             submitForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 this.handleAppSubmission();
             });
+            console.log('Форма отправки инициализирована');
+        } else {
+            console.error('Форма отправки не найдена');
         }
     }
 
     // Обработка отправки приложения
     async handleAppSubmission() {
+        console.log('Отправка приложения...');
+        
         const formData = {
             name: document.getElementById('appName').value.trim(),
             description: document.getElementById('appDescription').value.trim(),
@@ -380,6 +452,8 @@ class WPACatalogApp {
                 .filter(url => url && Utils.isValidUrl(url)),
             features: []
         };
+
+        console.log('Данные формы:', formData);
 
         // Валидация
         if (!formData.name || !formData.description || !formData.category || !formData.developer) {
@@ -431,12 +505,16 @@ class WPACatalogApp {
 
     // Инициализация админ панели
     initAdminPanel() {
+        console.log('Инициализация админ панели...');
         // Кнопки массовых действий будут добавлены динамически
         // в функции loadPendingApps
+        console.log('Админ панель инициализирована');
     }
 
     // Инициализация PWA функциональности
     initPWA() {
+        console.log('Инициализация PWA...');
+        
         // Регистрируем Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js')
@@ -447,11 +525,15 @@ class WPACatalogApp {
                 .catch(error => {
                     console.log('Ошибка регистрации ServiceWorker:', error);
                 });
+        } else {
+            console.log('Service Worker не поддерживается');
         }
     }
 
     // Настройка PWA установки
     setupPWAInstall() {
+        console.log('Настройка PWA установки...');
+        
         let deferredPrompt;
         const installContainer = document.getElementById('pwaInstallContainer');
         const installBtn = document.getElementById('pwaInstallBtn');
@@ -464,6 +546,7 @@ class WPACatalogApp {
             // Показываем кнопку установки
             if (installContainer) {
                 installContainer.style.display = 'block';
+                console.log('Кнопка PWA установки показана');
             }
         });
 
@@ -484,6 +567,9 @@ class WPACatalogApp {
                     deferredPrompt = null;
                 }
             });
+            console.log('Кнопка PWA установки настроена');
+        } else {
+            console.error('Кнопка PWA установки не найдена');
         }
 
         // Проверяем, установлено ли уже приложение
@@ -496,6 +582,8 @@ class WPACatalogApp {
 
     // Обработка массовых действий
     handleBulkAction(action) {
+        console.log('Массовое действие:', action);
+        
         const pendingApps = DataManager.getPendingApps();
         
         if (pendingApps.length === 0) {
@@ -538,7 +626,9 @@ class WPACatalogApp {
 
 // Инициализация приложения после загрузки DOM
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM загружен, создаем приложение...');
     window.wpaCatalogApp = new WPACatalogApp();
+    // НЕ инициализируем автоматически - это сделает device-detector
 });
 
 // Глобальные функции для использования в HTML
