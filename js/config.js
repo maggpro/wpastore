@@ -4,7 +4,7 @@ const WPA_CONFIG = {
     github: {
         owner: 'maggpro',             // GitHub username для публичного каталога
         repo: 'wpastore',             // Название репозитория для публичного каталога
-        token: '',                     // GitHub Personal Access Token (оставьте пустым для публичного доступа)
+        token: '',                     // GitHub Personal Access Token (загружается из localStorage или URL)
         useIssuesAsDB: true,          // Использовать GitHub Issues как публичную базу данных
         autoSync: true,               // Автоматическая синхронизация
         syncInterval: 5 * 60 * 1000   // Интервал синхронизации (5 минут)
@@ -74,6 +74,12 @@ const ConfigManager = {
         
         target[lastKey] = value;
         this.saveToLocalStorage();
+        
+        // Если устанавливаем токен, сохраняем его отдельно
+        if (key === 'github.token' && value) {
+            localStorage.setItem('github_token', value);
+            console.log('✅ GitHub токен сохранен в localStorage');
+        }
     },
     
     // Загрузить конфигурацию из LocalStorage
@@ -83,6 +89,21 @@ const ConfigManager = {
             if (saved) {
                 const parsed = JSON.parse(saved);
                 Object.assign(WPA_CONFIG, parsed);
+            }
+            
+            // Проверяем URL параметры для токена (для безопасности)
+            const urlParams = new URLSearchParams(window.location.search);
+            const tokenFromUrl = urlParams.get('token');
+            if (tokenFromUrl) {
+                WPA_CONFIG.github.token = tokenFromUrl;
+                console.log('✅ GitHub токен загружен из URL параметров');
+            }
+            
+            // Проверяем localStorage для токена
+            const savedToken = localStorage.getItem('github_token');
+            if (savedToken && !WPA_CONFIG.github.token) {
+                WPA_CONFIG.github.token = savedToken;
+                console.log('✅ GitHub токен загружен из localStorage');
             }
         } catch (error) {
             console.error('Ошибка загрузки конфигурации:', error);
@@ -147,6 +168,23 @@ const ConfigManager = {
         const owner = this.get('github.owner');
         const repo = this.get('github.repo');
         return `https://api.github.com/repos/${owner}/${repo}`;
+    },
+    
+    // Быстрая установка GitHub токена
+    setGitHubToken(token) {
+        if (token && token.startsWith('github_pat_')) {
+            this.set('github.token', token);
+            console.log('✅ GitHub токен установлен');
+            return true;
+        } else {
+            console.error('❌ Неверный формат GitHub токена');
+            return false;
+        }
+    },
+    
+    // Проверить, настроен ли токен
+    hasGitHubToken() {
+        return !!this.get('github.token');
     }
 };
 
@@ -154,11 +192,30 @@ const ConfigManager = {
 document.addEventListener('DOMContentLoaded', () => {
     ConfigManager.loadFromLocalStorage();
     
+    // Автоматически устанавливаем токен, если он есть в localStorage
+    const savedToken = localStorage.getItem('github_token');
+    if (savedToken && !ConfigManager.hasGitHubToken()) {
+        ConfigManager.setGitHubToken(savedToken);
+    }
+    
     // Проверяем GitHub настройки
     const githubValidation = ConfigManager.validateGitHubConfig();
     if (!githubValidation.valid) {
         console.warn('GitHub конфигурация не настроена:', githubValidation.message);
+    } else {
+        console.log('✅ GitHub конфигурация валидна');
+        console.log('📡 Репозиторий:', ConfigManager.getGitHubUrl());
+        console.log('🔑 Токен настроен:', ConfigManager.hasGitHubToken() ? 'Да' : 'Нет');
     }
+    
+    // Добавляем глобальную функцию для установки токена
+    window.setGitHubToken = (token) => {
+        if (ConfigManager.setGitHubToken(token)) {
+            console.log('🎉 GitHub токен установлен! Теперь все функции доступны.');
+            // Перезагружаем страницу для применения токена
+            setTimeout(() => location.reload(), 1000);
+        }
+    };
 });
 
 // Глобальные функции конфигурации
