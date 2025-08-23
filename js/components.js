@@ -29,7 +29,15 @@ const Components = {
         
         // Обработчик клика для открытия модала
         card.addEventListener('click', () => {
-            this.showAppModal(app.id);
+            if (window.mobileApp && typeof window.mobileApp.showAppDetails === 'function') {
+                window.mobileApp.showAppDetails(app);
+            } else {
+                console.warn('mobileApp.showAppDetails не доступен');
+                // Fallback: открываем в новом окне
+                if (app.website) {
+                    window.open(app.website, '_blank');
+                }
+            }
         });
         
         return card;
@@ -53,7 +61,15 @@ const Components = {
         
         // Обработчик клика для показа приложений категории
         card.addEventListener('click', () => {
-            this.showCategoryApps(category.id);
+            if (window.mobileApp && typeof window.mobileApp.showCategoryApps === 'function') {
+                window.mobileApp.showCategoryApps(category);
+            } else {
+                console.warn('mobileApp.showCategoryApps не доступен');
+                // Fallback: показываем все приложения
+                if (window.location.hash !== '#home') {
+                    window.location.hash = '#home';
+                }
+            }
         });
         
         return card;
@@ -89,12 +105,20 @@ const Components = {
         
         approveBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            this.approveApp(app.id);
+            if (window.mobileApp && typeof window.mobileApp.approveApp === 'function') {
+                window.mobileApp.approveApp(app.id);
+            } else {
+                console.warn('mobileApp.approveApp не доступен');
+            }
         });
         
         rejectBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            this.rejectApp(app.id);
+            if (window.mobileApp && typeof window.mobileApp.rejectApp === 'function') {
+                window.mobileApp.rejectApp(app.id);
+            } else {
+                console.warn('mobileApp.rejectApp не доступен');
+            }
         });
         
         return card;
