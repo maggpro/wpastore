@@ -30,11 +30,13 @@ class WPAMobileApp {
         // Загрузка данных
         this.loadData();
         
-        // Настройка событий
-        this.setupEvents();
-        
         // Показываем домашнюю страницу
         this.showPage('home');
+        
+        // Откладываем настройку событий до полной загрузки DOM
+        setTimeout(() => {
+            this.setupEvents();
+        }, 100);
         
         console.log('✅ Мобильное приложение инициализировано');
     }
