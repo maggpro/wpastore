@@ -8,6 +8,8 @@ class WPAMobileApp {
     }
 
     init() {
+        console.log('Инициализация мобильного приложения WPA.STORE...');
+        
         // Инициализация Framework7
         this.app = new Framework7({
             name: 'WPA.STORE',
@@ -28,10 +30,14 @@ class WPAMobileApp {
             }
         });
 
+        console.log('Framework7 инициализирован');
+
         // Инициализация главного view
         this.mainView = this.app.views.create('.view-main', {
             url: '/'
         });
+
+        console.log('Главный view создан');
 
         // Инициализация PWA
         this.initPWA();
@@ -44,6 +50,11 @@ class WPAMobileApp {
         
         // Настройка навигации
         this.setupNavigation();
+        
+        // Показываем домашнюю страницу по умолчанию
+        this.navigateToPage('home');
+        
+        console.log('Мобильное приложение инициализировано');
     }
 
     // Инициализация PWA
@@ -100,18 +111,26 @@ class WPAMobileApp {
 
     // Загрузка данных
     async loadData() {
+        console.log('Загрузка данных мобильного приложения...');
+        
         try {
             // Загружаем главную страницу
+            console.log('Загрузка главной страницы...');
             await this.loadHomePage();
             
             // Загружаем категории
+            console.log('Загрузка категорий...');
             await this.loadCategories();
             
             // Загружаем ожидающие приложения
+            console.log('Загрузка ожидающих приложений...');
             await this.loadPendingApps();
             
             // Загружаем настройки
+            console.log('Загрузка настроек...');
             this.loadSettings();
+            
+            console.log('Все данные загружены');
         } catch (error) {
             console.error('Ошибка загрузки данных:', error);
         }
@@ -469,19 +488,54 @@ class WPAMobileApp {
 
     // Настройка навигации
     setupNavigation() {
-        // Обработка переключения вкладок
-        this.app.on('tabShow', (tab) => {
-            this.currentPage = tab.el.getAttribute('href').substring(1);
-            this.updateActiveTab();
+        console.log('Настройка навигации мобильного приложения...');
+        
+        // Находим все tab-link элементы
+        const tabLinks = document.querySelectorAll('.tab-link');
+        console.log('Найдено tab-link элементов:', tabLinks.length);
+        
+        tabLinks.forEach((link, index) => {
+            const page = link.getAttribute('data-page');
+            console.log(`Настройка tab-link ${index + 1}:`, page);
+            
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Клик по tab-link:', page);
+                this.navigateToPage(page);
+            });
         });
     }
 
+    // Навигация к странице
+    navigateToPage(pageName) {
+        console.log('Навигация к странице:', pageName);
+        
+        // Скрываем все страницы
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(page => {
+            page.style.display = 'none';
+        });
+        
+        // Показываем нужную страницу
+        const targetPage = document.querySelector(`[data-name="${pageName}"]`);
+        if (targetPage) {
+            targetPage.style.display = 'block';
+            console.log('Страница показана:', pageName);
+        } else {
+            console.error('Страница не найдена:', pageName);
+        }
+        
+        // Обновляем активную вкладку
+        this.updateActiveTab(pageName);
+        this.currentPage = pageName;
+    }
+
     // Обновление активной вкладки
-    updateActiveTab() {
+    updateActiveTab(pageName) {
         const tabLinks = document.querySelectorAll('.tab-link');
         tabLinks.forEach(link => {
             link.classList.remove('tab-link-active');
-            if (link.getAttribute('href') === `#${this.currentPage}`) {
+            if (link.getAttribute('data-page') === pageName) {
                 link.classList.add('tab-link-active');
             }
         });

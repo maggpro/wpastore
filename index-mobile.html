@@ -24,8 +24,8 @@
     <div id="app">
         <!-- Main View -->
         <div class="view view-main view-init">
-            <!-- Pages -->
-            <div class="page" data-name="home">
+            <!-- Home Page -->
+            <div class="page" data-name="home" style="display: block;">
                 <!-- Home Page -->
                 <div class="page-content">
                     <!-- Hero Section -->
@@ -77,7 +77,7 @@
             </div>
 
             <!-- Categories Page -->
-            <div class="page" data-name="categories">
+            <div class="page" data-name="categories" style="display: none;">
                 <div class="page-content">
                     <div class="page-header">
                         <h2>Категории</h2>
@@ -90,7 +90,7 @@
             </div>
 
             <!-- Submit Page -->
-            <div class="page" data-name="submit">
+            <div class="page" data-name="submit" style="display: none;">
                 <div class="page-content">
                     <div class="page-header">
                         <h2>Добавить приложение</h2>
@@ -194,7 +194,7 @@
             </div>
 
             <!-- Admin Page -->
-            <div class="page" data-name="admin">
+            <div class="page" data-name="admin" style="display: none;">
                 <div class="page-content">
                     <div class="page-header">
                         <h2>Админ панель</h2>
@@ -210,7 +210,7 @@
             </div>
 
             <!-- Settings Page -->
-            <div class="page" data-name="settings">
+            <div class="page" data-name="settings" style="display: none;">
                 <div class="page-content">
                     <div class="page-header">
                         <h2>Настройки</h2>
@@ -272,23 +272,23 @@
         <!-- Bottom Tabbar -->
         <div class="toolbar toolbar-bottom tabbar">
             <div class="toolbar-inner">
-                <a href="#home" class="tab-link tab-link-active" data-view=".view-main" data-view=".view-main">
+                <a href="#" class="tab-link tab-link-active" data-page="home">
                     <i class="fas fa-home"></i>
                     <span>Главная</span>
                 </a>
-                <a href="#categories" class="tab-link" data-view=".view-main" data-view=".view-main">
+                <a href="#" class="tab-link" data-page="categories">
                     <i class="fas fa-th-large"></i>
                     <span>Категории</span>
                 </a>
-                <a href="#submit" class="tab-link" data-view=".view-main" data-view=".view-main">
+                <a href="#" class="tab-link" data-page="submit">
                     <i class="fas fa-plus"></i>
                     <span>Добавить</span>
                 </a>
-                <a href="#admin" class="tab-link" data-view=".view-main" data-view=".view-main">
-                    <i class="fas fa-cog"></i>
+                <a href="#" class="tab-link" data-page="admin">
+                    <i class="fas fa-user-shield"></i>
                     <span>Админка</span>
                 </a>
-                <a href="#settings" class="tab-link" data-view=".view-main" data-view=".view-main">
+                <a href="#" class="tab-link" data-page="settings">
                     <i class="fas fa-cog"></i>
                     <span>Настройки</span>
                 </a>

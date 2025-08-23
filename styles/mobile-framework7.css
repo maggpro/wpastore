@@ -377,15 +377,28 @@
     font-size: 0.85rem;
 }
 
+/* Page Content with Bottom Padding */
+.page-content {
+    padding-bottom: 90px !important;
+}
+
 /* Bottom Tabbar */
 .toolbar-bottom {
     background: white;
     border-top: 1px solid #e5e5e5;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 9999 !important;
 }
 
 .tabbar {
     height: 70px;
+    position: fixed !important;
+    bottom: 0 !important;
+    width: 100% !important;
 }
 
 .tabbar .toolbar-inner {
