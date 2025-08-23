@@ -216,6 +216,47 @@ const DataManager = {
             this.saveToLocalStorage();
         }
         console.log('DataManager инициализирован');
+    },
+
+    // Очистка кэша и сброс к начальным данным
+    clearCache() {
+        console.log('🧹 Очистка кэша...');
+        
+        // Очищаем LocalStorage
+        localStorage.removeItem('wpa_catalog_data');
+        localStorage.removeItem('wpa_config');
+        localStorage.removeItem('wpa_installed_apps');
+        
+        // Сбрасываем к начальным данным
+        WPA_DATA.apps = [
+            {
+                id: 1,
+                name: 'Calm - Дыхательные упражнения',
+                description: 'Приложение для медитации и дыхательных упражнений. Помогает снять стресс, улучшить сон и общее самочувствие. Включает различные техники дыхания, звуки природы и управляемые медитации.',
+                category: 'health',
+                developer: 'MaggPro',
+                version: '1.0.0',
+                rating: 4.9,
+                downloads: 25000,
+                website: 'https://maggpro.github.io/calm/#breath',
+                icon: 'https://maggpro.github.io/calm/assets/icon-192.png',
+                screenshots: [
+                    'https://maggpro.github.io/calm/assets/screenshot1.png',
+                    'https://maggpro.github.io/calm/assets/screenshot2.png'
+                ],
+                features: ['Дыхательные упражнения', 'Медитации', 'Звуки природы', 'Таймер сна', 'Отслеживание прогресса'],
+                status: 'approved',
+                featured: true,
+                dateAdded: '2024-01-20'
+            }
+        ];
+        WPA_DATA.pendingApps = [];
+        
+        // Сохраняем очищенные данные
+        this.saveToLocalStorage();
+        
+        console.log('✅ Кэш очищен, данные сброшены к начальным');
+        return true;
     }
 };
 

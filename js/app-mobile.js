@@ -1316,6 +1316,28 @@ class WPAMobileApp {
         }
     }
 
+    // Очистка кэша
+    clearCache() {
+        console.log('🧹 Очистка кэша...');
+        
+        try {
+            if (typeof DataManager !== 'undefined') {
+                DataManager.clearCache();
+                this.showNotification('✅ Кэш очищен! Перезагружаем страницу...', 'success');
+                
+                // Перезагружаем страницу через 2 секунды
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                this.showNotification('❌ DataManager не доступен', 'error');
+            }
+        } catch (error) {
+            console.error('❌ Ошибка очистки кэша:', error);
+            this.showNotification('❌ Ошибка очистки кэша: ' + error.message, 'error');
+        }
+    }
+
     // Настройка событий
     setupEvents() {
         console.log('🎯 Настройка событий...');
@@ -1327,6 +1349,15 @@ class WPAMobileApp {
             console.log('✅ Кнопка сохранения настроек настроена');
         } else {
             console.error('❌ Кнопка сохранения настроек не найдена');
+        }
+        
+        // Кнопка очистки кэша
+        const clearCacheBtn = document.getElementById('clearCache');
+        if (clearCacheBtn) {
+            clearCacheBtn.addEventListener('click', () => this.clearCache());
+            console.log('✅ Кнопка очистки кэша настроена');
+        } else {
+            console.error('❌ Кнопка очистки кэша не найдена');
         }
     }
 
