@@ -625,6 +625,8 @@ class WPAMobileApp {
             // Формируем правильный URL для манифеста
             let manifestUrl;
             try {
+                console.log('🔍 Исходный website:', app.website);
+                
                 // Если website заканчивается на /, добавляем manifest.json
                 if (app.website.endsWith('/')) {
                     manifestUrl = app.website + 'manifest.json';
@@ -634,6 +636,8 @@ class WPAMobileApp {
                 }
                 
                 console.log('🔍 Ищем манифест по адресу:', manifestUrl);
+                console.log('🔍 Проверяем, что URL сформирован правильно');
+                
                 const response = await fetch(manifestUrl);
                 
                 if (response.ok) {

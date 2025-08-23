@@ -7,8 +7,8 @@ const WPA_CONFIG = {
         token: '',                     // GitHub Personal Access Token (только для админов)
         useIssuesAsDB: true,          // Использовать GitHub Issues как публичную базу данных
         autoSync: true,               // Автоматическая синхронизация
-        syncInterval: 5 * 60 * 1000   // Интервал синхронизации (5 минут)
-        publicReadOnly: true,         // Публичный доступ только для чтения
+        syncInterval: 5 * 60 * 1000,  // Интервал синхронизации (5 минут)
+        publicReadOnly: true          // Публичный доступ только для чтения
     },
     
     // Настройки приложения

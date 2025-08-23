@@ -92,7 +92,7 @@ const WPA_DATA = {
             rating: 4.8,
             downloads: 15420,
             website: 'https://wpataskmanager.com',
-            icon: 'https://via.placeholder.com/80/667eea/ffffff?text=TM',
+            icon: '', // Используем FontAwesome иконку
             screenshots: [
                 'https://via.placeholder.com/400x300/667eea/ffffff?text=Screenshot+1',
                 'https://via.placeholder.com/400x300/667eea/ffffff?text=Screenshot+2'
@@ -111,7 +111,7 @@ const WPA_DATA = {
             rating: 4.6,
             downloads: 8920,
             website: 'https://wpachat.com',
-            icon: 'https://via.placeholder.com/80/4facfe/ffffff?text=CH',
+            icon: '', // Используем FontAwesome иконку
             screenshots: [
                 'https://via.placeholder.com/400x300/4facfe/ffffff?text=Screenshot+1',
                 'https://via.placeholder.com/400x300/4facfe/ffffff?text=Screenshot+2'
@@ -119,25 +119,6 @@ const WPA_DATA = {
             features: ['Групповые чаты', 'Голосовые сообщения', 'Шифрование', 'Файлы'],
             status: 'approved',
             dateAdded: '2024-01-10'
-        },
-        {
-            id: 3,
-            name: 'Calm - Дыхательные упражнения',
-            description: 'Приложение для медитации и дыхательных упражнений. Помогает снизить стресс, улучшить сон и общее самочувствие с помощью различных техник дыхания.',
-            category: 'health',
-            developer: 'MaggPro',
-            version: '1.0.0',
-            rating: 4.9,
-            downloads: 1250,
-            website: 'https://maggpro.github.io/calm/',
-            icon: 'https://via.placeholder.com/80/fa709a/ffffff?text=🫁',
-            screenshots: [
-                'https://via.placeholder.com/400x300/fa709a/ffffff?text=Calm+App',
-                'https://via.placeholder.com/400x300/fa709a/ffffff?text=Breathing+Mode'
-            ],
-            features: ['Техника 4-7-8', 'Box Breathing', 'Когерентное дыхание', 'Журнал стресса', 'Настройки вибрации', 'Голосовые подсказки'],
-            status: 'approved',
-            dateAdded: '2024-01-20'
         },
         {
             id: 4,
@@ -149,7 +130,7 @@ const WPA_DATA = {
             rating: 4.9,
             downloads: 12350,
             website: 'https://wpafitness.com',
-            icon: 'https://via.placeholder.com/80/fa709a/ffffff?text=FT',
+            icon: '', // Используем FontAwesome иконку
             screenshots: [
                 'https://via.placeholder.com/400x300/fa709a/ffffff?text=Screenshot+1',
                 'https://via.placeholder.com/400x300/fa709a/ffffff?text=Screenshot+2'
@@ -159,7 +140,7 @@ const WPA_DATA = {
             dateAdded: '2024-01-08'
         },
         {
-            id: 4,
+            id: 5,
             name: 'WPA Language Learning',
             description: 'Изучайте новые языки с помощью интерактивных уроков и практических упражнений.',
             category: 'education',
@@ -168,7 +149,7 @@ const WPA_DATA = {
             rating: 4.7,
             downloads: 6780,
             website: 'https://wpalanguage.com',
-            icon: 'https://via.placeholder.com/80/43e97b/ffffff?text=LL',
+            icon: '', // Используем FontAwesome иконку
             screenshots: [
                 'https://via.placeholder.com/400x300/43e97b/ffffff?text=Screenshot+1',
                 'https://via.placeholder.com/400x300/43e97b/ffffff?text=Screenshot+2'
@@ -178,7 +159,7 @@ const WPA_DATA = {
             dateAdded: '2024-01-05'
         },
         {
-            id: 5,
+            id: 6,
             name: 'WPA Budget Manager',
             description: 'Управляйте своими финансами, отслеживайте расходы и планируйте бюджет.',
             category: 'finance',
@@ -187,7 +168,7 @@ const WPA_DATA = {
             rating: 4.5,
             downloads: 4560,
             website: 'https://wpabudget.com',
-            icon: 'https://via.placeholder.com/80/ffecd2/333333?text=BM',
+            icon: '', // Используем FontAwesome иконку
             screenshots: [
                 'https://via.placeholder.com/400x300/ffecd2/333333?text=Screenshot+1',
                 'https://via.placeholder.com/400x300/ffecd2/333333?text=Screenshot+2'
@@ -201,7 +182,7 @@ const WPA_DATA = {
     // Приложения на рассмотрении
     pendingApps: [
         {
-            id: 6,
+            id: 7,
             name: 'WPA Recipe Book',
             description: 'Коллекция рецептов с пошаговыми инструкциями и возможностью создания собственных рецептов.',
             category: 'lifestyle',
