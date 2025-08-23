@@ -1232,50 +1232,41 @@ class WPAMobileApp {
         }
 
         try {
-            // Всегда пытаемся отправить в GitHub для публичного каталога
-            if (typeof ConfigManager !== 'undefined' && window.GitHubDB) {
-                const useGitHub = ConfigManager.get('github.useIssuesAsDB', true);
+            // Сначала сохраняем локально для всех пользователей
+            if (typeof DataManager !== 'undefined') {
+                const newApp = DataManager.addApp(formData);
+                this.showNotification('✅ Приложение отправлено на модерацию!', 'success');
+                console.log('✅ Приложение добавлено локально:', newApp);
                 
-                if (useGitHub) {
-                    console.log('📤 Отправка в публичный каталог GitHub...');
-                    const githubDB = new GitHubDB({
-                        owner: ConfigManager.get('github.owner', 'maggpro'),
-                        repo: ConfigManager.get('github.repo', 'wpastore'),
-                        token: ConfigManager.get('github.token', '') // Токен нужен только для создания
-                    });
-                    
-                    // Проверяем есть ли токен для создания Issues
+                // Пытаемся отправить в GitHub (если есть токен админа)
+                if (typeof ConfigManager !== 'undefined' && window.GitHubDB) {
+                    const useGitHub = ConfigManager.get('github.useIssuesAsDB', true);
                     const token = ConfigManager.get('github.token', '');
-                    if (!token) {
-                        this.showNotification('⚠️ Нужен GitHub токен для отправки приложений. Настройте его в разделе "Настройки"', 'error');
-                        this.showPage('settings');
-                        return;
-                    }
                     
-                    await githubDB.addApp(formData);
-                    this.showNotification('🎉 Приложение отправлено на модерацию в публичный каталог!', 'success');
-                    console.log('✅ Приложение отправлено в GitHub');
-                } else {
-                    // Fallback на локальное хранилище
-                    if (typeof DataManager !== 'undefined') {
-                        const newApp = DataManager.addApp(formData);
-                        this.showNotification('Приложение сохранено локально (не в публичном каталоге)', 'warning');
-                        console.log('⚠️ Добавлено локально:', newApp);
+                    if (useGitHub && token) {
+                        console.log('📤 Дополнительная отправка в GitHub (админ режим)...');
+                        try {
+                            const githubDB = new GitHubDB({
+                                owner: ConfigManager.get('github.owner', 'maggpro'),
+                                repo: ConfigManager.get('github.repo', 'wpastore'),
+                                token: token
+                            });
+                            
+                            await githubDB.addApp(formData);
+                            this.showNotification('🚀 Приложение также отправлено в публичный каталог GitHub!', 'success');
+                            console.log('✅ Приложение отправлено в GitHub');
+                        } catch (githubError) {
+                            console.log('⚠️ GitHub отправка не удалась, но локально сохранено:', githubError);
+                            this.showNotification('ℹ️ Приложение сохранено локально. Админ может опубликовать его позже.', 'info');
+                        }
                     } else {
-                        this.showNotification('Ошибка: DataManager не доступен', 'error');
-                        return;
+                        console.log('ℹ️ GitHub токен не настроен, приложение сохранено локально');
+                        this.showNotification('ℹ️ Приложение сохранено локально. Админ может опубликовать его позже.', 'info');
                     }
                 }
             } else {
-                // Последний fallback
-                if (typeof DataManager !== 'undefined') {
-                    const newApp = DataManager.addApp(formData);
-                    this.showNotification('Приложение сохранено локально (не в публичном каталоге)', 'warning');
-                    console.log('⚠️ Добавлено локально:', newApp);
-                } else {
-                    this.showNotification('Ошибка: система недоступна', 'error');
-                    return;
-                }
+                this.showNotification('❌ Ошибка: система недоступна', 'error');
+                return;
             }
             
             // Очищаем форму
