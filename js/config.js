@@ -4,10 +4,11 @@ const WPA_CONFIG = {
     github: {
         owner: 'maggpro',             // GitHub username для публичного каталога
         repo: 'wpastore',             // Название репозитория для публичного каталога
-        token: '',                     // GitHub Personal Access Token (загружается из localStorage или URL)
+        token: '',                     // GitHub Personal Access Token (только для админов)
         useIssuesAsDB: true,          // Использовать GitHub Issues как публичную базу данных
         autoSync: true,               // Автоматическая синхронизация
         syncInterval: 5 * 60 * 1000   // Интервал синхронизации (5 минут)
+        publicReadOnly: true,         // Публичный доступ только для чтения
     },
     
     // Настройки приложения
@@ -75,10 +76,10 @@ const ConfigManager = {
         target[lastKey] = value;
         this.saveToLocalStorage();
         
-        // Если устанавливаем токен, сохраняем его отдельно
+        // Если устанавливаем токен, сохраняем его только для текущей сессии
         if (key === 'github.token' && value) {
-            localStorage.setItem('github_token', value);
-            console.log('✅ GitHub токен сохранен в localStorage');
+            sessionStorage.setItem('github_token', value);
+            console.log('🔑 GitHub токен установлен для текущей сессии (админ режим)');
         }
     },
     
@@ -91,19 +92,12 @@ const ConfigManager = {
                 Object.assign(WPA_CONFIG, parsed);
             }
             
-            // Проверяем URL параметры для токена (для безопасности)
+            // Проверяем URL параметры для токена (только для админов)
             const urlParams = new URLSearchParams(window.location.search);
             const tokenFromUrl = urlParams.get('token');
-            if (tokenFromUrl) {
+            if (tokenFromUrl && tokenFromUrl.startsWith('github_pat_')) {
                 WPA_CONFIG.github.token = tokenFromUrl;
-                console.log('✅ GitHub токен загружен из URL параметров');
-            }
-            
-            // Проверяем localStorage для токена
-            const savedToken = localStorage.getItem('github_token');
-            if (savedToken && !WPA_CONFIG.github.token) {
-                WPA_CONFIG.github.token = savedToken;
-                console.log('✅ GitHub токен загружен из localStorage');
+                console.log('🔑 GitHub токен загружен из URL параметров (админ режим)');
             }
         } catch (error) {
             console.error('Ошибка загрузки конфигурации:', error);
@@ -170,11 +164,11 @@ const ConfigManager = {
         return `https://api.github.com/repos/${owner}/${repo}`;
     },
     
-    // Быстрая установка GitHub токена
+    // Быстрая установка GitHub токена (только для админов)
     setGitHubToken(token) {
         if (token && token.startsWith('github_pat_')) {
             this.set('github.token', token);
-            console.log('✅ GitHub токен установлен');
+            console.log('🔑 GitHub токен установлен (админ режим)');
             return true;
         } else {
             console.error('❌ Неверный формат GitHub токена');
@@ -182,21 +176,29 @@ const ConfigManager = {
         }
     },
     
-    // Проверить, настроен ли токен
+    // Проверить, настроен ли токен (админ режим)
     hasGitHubToken() {
         return !!this.get('github.token');
+    },
+    
+    // Проверить, доступен ли админ режим
+    isAdminMode() {
+        return this.hasGitHubToken();
+    },
+    
+    // Получить режим работы
+    getWorkMode() {
+        if (this.isAdminMode()) {
+            return 'admin';
+        } else {
+            return 'public';
+        }
     }
 };
 
 // Инициализация конфигурации
 document.addEventListener('DOMContentLoaded', () => {
     ConfigManager.loadFromLocalStorage();
-    
-    // Автоматически устанавливаем токен, если он есть в localStorage
-    const savedToken = localStorage.getItem('github_token');
-    if (savedToken && !ConfigManager.hasGitHubToken()) {
-        ConfigManager.setGitHubToken(savedToken);
-    }
     
     // Проверяем GitHub настройки
     const githubValidation = ConfigManager.validateGitHubConfig();
@@ -205,17 +207,22 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.log('✅ GitHub конфигурация валидна');
         console.log('📡 Репозиторий:', ConfigManager.getGitHubUrl());
-        console.log('🔑 Токен настроен:', ConfigManager.hasGitHubToken() ? 'Да' : 'Нет');
+        console.log('🔑 Режим работы:', ConfigManager.getWorkMode());
+        console.log('👑 Админ режим:', ConfigManager.isAdminMode() ? 'Доступен' : 'Недоступен');
     }
     
-    // Добавляем глобальную функцию для установки токена
+    // Добавляем глобальную функцию для установки токена (только для админов)
     window.setGitHubToken = (token) => {
         if (ConfigManager.setGitHubToken(token)) {
-            console.log('🎉 GitHub токен установлен! Теперь все функции доступны.');
+            console.log('🎉 GitHub токен установлен! Админ режим активирован.');
             // Перезагружаем страницу для применения токена
             setTimeout(() => location.reload(), 1000);
         }
     };
+    
+    // Добавляем глобальную функцию для проверки режима
+    window.getWorkMode = () => ConfigManager.getWorkMode();
+    window.isAdminMode = () => ConfigManager.isAdminMode();
 });
 
 // Глобальные функции конфигурации
