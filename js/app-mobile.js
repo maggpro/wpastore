@@ -880,20 +880,138 @@ class WPAMobileApp {
     showCategoryApps(category) {
         console.log('📂 Показать приложения категории:', category.name);
         
-        // Переходим на главную страницу и показываем приложения категории
+        // Переходим на главную страницу
         this.showPage('home');
         
-        // Фильтруем приложения по категории
-        if (typeof WPA_DATA !== 'undefined') {
-            const categoryApps = WPA_DATA.apps.filter(app => app.category === category.id);
-            this.renderApps(categoryApps, 'featuredApps');
+        // Ждем немного, чтобы страница загрузилась
+        setTimeout(() => {
+            this.showCategoryAppsContent(category);
+        }, 100);
+    }
+
+    // Показать содержимое категории на главной странице
+    showCategoryAppsContent(category) {
+        console.log('🎯 Отображение приложений категории:', category.name);
+        
+        try {
+            let categoryApps = [];
             
-            // Обновляем заголовок
-            const title = document.querySelector('.section-title');
-            if (title) {
-                title.textContent = `Приложения: ${category.name}`;
+            // Пытаемся загрузить из GitHub
+            if (typeof ConfigManager !== 'undefined' && window.GitHubDB) {
+                const useGitHub = ConfigManager.get('github.useIssuesAsDB', true);
+                
+                if (useGitHub) {
+                    console.log('📡 Загрузка приложений категории из GitHub...');
+                    // Здесь можно добавить загрузку из GitHub по категории
+                }
             }
+            
+            // Fallback на локальные данные
+            if (categoryApps.length === 0 && typeof WPA_DATA !== 'undefined') {
+                console.log('📂 Fallback на локальные данные для категории:', category.name);
+                categoryApps = WPA_DATA.apps.filter(app => 
+                    app.category === category.id && 
+                    app.status !== 'rejected'
+                );
+            }
+            
+            console.log(`📋 Найдено приложений в категории ${category.name}:`, categoryApps.length);
+            
+            // Обновляем заголовки
+            this.updateCategoryHeaders(category.name);
+            
+            // Показываем приложения категории
+            if (categoryApps.length > 0) {
+                this.renderApps(categoryApps, 'featuredApps');
+                this.renderApps(categoryApps, 'recentApps');
+                
+                // Показываем уведомление
+                this.showNotification(`📂 Показано ${categoryApps.length} приложений в категории "${category.name}"`, 'info');
+            } else {
+                // Показываем сообщение об отсутствии приложений
+                this.showNoAppsInCategory(category.name);
+            }
+            
+        } catch (error) {
+            console.error('❌ Ошибка при загрузке приложений категории:', error);
+            this.showNotification('Ошибка при загрузке приложений категории', 'error');
         }
+    }
+
+    // Обновление заголовков для категории
+    updateCategoryHeaders(categoryName) {
+        console.log('🏷️ Обновление заголовков для категории:', categoryName);
+        
+        // Обновляем заголовок рекомендуемых приложений
+        const featuredTitle = document.querySelector('.block-title');
+        if (featuredTitle) {
+            featuredTitle.innerHTML = `📂 Приложения: ${categoryName}`;
+        }
+        
+        // Обновляем заголовок недавних приложений
+        const recentTitle = document.querySelectorAll('.block-title')[1];
+        if (recentTitle) {
+            recentTitle.innerHTML = `⭐ Все приложения в категории "${categoryName}"`;
+        }
+        
+        // Добавляем кнопку возврата
+        this.addBackToAllButton();
+    }
+
+    // Добавление кнопки возврата ко всем приложениям
+    addBackToAllButton() {
+        console.log('🔙 Добавление кнопки возврата');
+        
+        // Удаляем существующую кнопку, если есть
+        const existingBtn = document.querySelector('.back-to-all-btn');
+        if (existingBtn) {
+            existingBtn.remove();
+        }
+        
+        // Создаем кнопку возврата
+        const backBtn = document.createElement('button');
+        backBtn.className = 'button button-outline button-small back-to-all-btn';
+        backBtn.innerHTML = '<i class="fas fa-arrow-left"></i> Показать все приложения';
+        backBtn.style.margin = '0 1rem 1rem';
+        
+        backBtn.addEventListener('click', () => {
+            console.log('🔙 Возврат ко всем приложениям');
+            this.loadHomePage();
+        });
+        
+        // Вставляем кнопку после первого заголовка
+        const firstTitle = document.querySelector('.block-title');
+        if (firstTitle) {
+            firstTitle.parentNode.insertBefore(backBtn, firstTitle.nextSibling);
+        }
+    }
+
+    // Показать сообщение об отсутствии приложений в категории
+    showNoAppsInCategory(categoryName) {
+        console.log('📭 Показ сообщения об отсутствии приложений в категории:', categoryName);
+        
+        const featuredApps = document.getElementById('featuredApps');
+        const recentApps = document.getElementById('recentApps');
+        
+        if (featuredApps) {
+            featuredApps.innerHTML = `
+                <div class="no-apps">
+                    <i class="fas fa-folder-open" style="font-size: 2rem; color: #ccc; margin-bottom: 1rem;"></i>
+                    <p>В категории "${categoryName}" пока нет приложений</p>
+                    <button class="button button-fill" onclick="mobileApp.showPage('submit')">
+                        <i class="fas fa-plus"></i> Добавить первое приложение
+                    </button>
+                </div>
+            `;
+        }
+        
+        if (recentApps) {
+            recentApps.innerHTML = '';
+        }
+        
+        // Обновляем заголовки
+        this.updateCategoryHeaders(categoryName);
+        this.addBackToAllButton();
     }
 
     // Одобрить приложение

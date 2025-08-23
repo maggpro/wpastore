@@ -1014,6 +1014,42 @@
     padding: 3rem 1rem;
     color: #999;
     font-size: 1rem;
+    background: #f8f9fa;
+    border-radius: 16px;
+    margin: 1rem;
+    border: 1px solid #e9ecef;
+}
+
+.no-apps i {
+    display: block;
+    margin-bottom: 1rem;
+    opacity: 0.6;
+}
+
+.no-apps p {
+    margin-bottom: 1.5rem;
+    color: #666;
+    line-height: 1.5;
+}
+
+.no-apps .button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.no-apps .button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
 /* Loading States */
@@ -1022,4 +1058,28 @@
     padding: 2rem;
     color: #666;
     font-size: 1rem;
+}
+
+/* Back to All Button */
+.back-to-all-btn {
+    background: #f8f9fa;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.back-to-all-btn:hover {
+    background: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.back-to-all-btn:active {
+    transform: scale(0.98);
 }
