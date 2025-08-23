@@ -627,12 +627,16 @@ class WPAMobileApp {
             try {
                 console.log('🔍 Исходный website:', app.website);
                 
+                // Убираем хэш из URL перед формированием пути к манифесту
+                const baseUrl = app.website.split('#')[0];
+                console.log('🔍 Base URL без хэша:', baseUrl);
+                
                 // Если website заканчивается на /, добавляем manifest.json
-                if (app.website.endsWith('/')) {
-                    manifestUrl = app.website + 'manifest.json';
+                if (baseUrl.endsWith('/')) {
+                    manifestUrl = baseUrl + 'manifest.json';
                 } else {
                     // Иначе добавляем /manifest.json
-                    manifestUrl = app.website + '/manifest.json';
+                    manifestUrl = baseUrl + '/manifest.json';
                 }
                 
                 console.log('🔍 Ищем манифест по адресу:', manifestUrl);

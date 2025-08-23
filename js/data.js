@@ -94,8 +94,8 @@ const WPA_DATA = {
             website: 'https://wpataskmanager.com',
             icon: '', // Используем FontAwesome иконку
             screenshots: [
-                'https://via.placeholder.com/400x300/667eea/ffffff?text=Screenshot+1',
-                'https://via.placeholder.com/400x300/667eea/ffffff?text=Screenshot+2'
+                '', // Скриншот 1
+                ''  // Скриншот 2
             ],
             features: ['Управление проектами', 'Таймер Pomodoro', 'Синхронизация', 'Отчеты'],
             status: 'approved',
@@ -113,8 +113,8 @@ const WPA_DATA = {
             website: 'https://wpachat.com',
             icon: '', // Используем FontAwesome иконку
             screenshots: [
-                'https://via.placeholder.com/400x300/4facfe/ffffff?text=Screenshot+1',
-                'https://via.placeholder.com/400x300/4facfe/ffffff?text=Screenshot+2'
+                '', // Скриншот 1
+                ''  // Скриншот 2
             ],
             features: ['Групповые чаты', 'Голосовые сообщения', 'Шифрование', 'Файлы'],
             status: 'approved',
@@ -132,8 +132,8 @@ const WPA_DATA = {
             website: 'https://wpafitness.com',
             icon: '', // Используем FontAwesome иконку
             screenshots: [
-                'https://via.placeholder.com/400x300/fa709a/ffffff?text=Screenshot+1',
-                'https://via.placeholder.com/400x300/fa709a/ffffff?text=Screenshot+2'
+                '', // Скриншот 1
+                ''  // Скриншот 2
             ],
             features: ['Отслеживание тренировок', 'Дневник питания', 'Аналитика', 'Социальные функции'],
             status: 'approved',
@@ -151,8 +151,8 @@ const WPA_DATA = {
             website: 'https://wpalanguage.com',
             icon: '', // Используем FontAwesome иконку
             screenshots: [
-                'https://via.placeholder.com/400x300/43e97b/ffffff?text=Screenshot+1',
-                'https://via.placeholder.com/400x300/43e97b/ffffff?text=Screenshot+2'
+                '', // Скриншот 1
+                ''  // Скриншот 2
             ],
             features: ['Интерактивные уроки', 'Говорение', 'Грамматика', 'Прогресс'],
             status: 'approved',
@@ -170,8 +170,8 @@ const WPA_DATA = {
             website: 'https://wpabudget.com',
             icon: '', // Используем FontAwesome иконку
             screenshots: [
-                'https://via.placeholder.com/400x300/ffecd2/333333?text=Screenshot+1',
-                'https://via.placeholder.com/400x300/ffecd2/333333?text=Screenshot+2'
+                '', // Скриншот 1
+                ''  // Скриншот 2
             ],
             features: ['Отслеживание расходов', 'Планирование бюджета', 'Категории', 'Отчеты'],
             status: 'approved',
@@ -191,9 +191,9 @@ const WPA_DATA = {
             rating: 0,
             downloads: 0,
             website: 'https://wparecipes.com',
-            icon: 'https://via.placeholder.com/80/ff9a9e/ffffff?text=RB',
+            icon: '', // Используем FontAwesome иконку
             screenshots: [
-                'https://via.placeholder.com/400x300/ff9a9e/ffffff?text=Screenshot+1'
+                '' // Скриншот 1
             ],
             features: ['Коллекция рецептов', 'Пошаговые инструкции', 'Создание рецептов', 'Поиск'],
             status: 'pending',
